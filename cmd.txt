@@ -1,0 +1,3 @@
+## hall process list
+nohup ./hall.bin --config=config.yml --port=11501 --lis_client_port=0 --hport=11502 --hash_sum=0 --node=1 1>/dev/null  2>>./core.file.11501  &
+nohup ./hall.bin --config=config.yml --port=11503 --lis_client_port=0 --hport=11504 --hash_sum=0 --node=2 1>/dev/null  2>>./core.file.11503  &

@@ -1,0 +1,48 @@
+mode: local
+
+name: merchant
+version: v0.1
+
+zone: India
+
+server:
+  http:
+    host: 0.0.0.0
+    port: 8090
+
+jwt:
+  secret: secret
+  tokenExpire: 24
+  issuer: alex
+  sub: bz
+
+log:
+  log_level: 6
+  log_dir: ./log
+  log_prefix: merchant
+  log_stderr: true
+
+data:
+  database-merchant:
+    dialect: mysql
+    host: 192.168.1.22
+    port: 3306
+    user: back
+    password: Back_789456123
+    database: merchant
+    maxIdle: 20
+    maxOpen: 20
+    maxLifetime: 300
+  redis-merchant:
+    addr: 192.168.1.22:6379
+    password: rdD1azaiErffCtiB6FnV6RzEiDUseDv
+    database: 9
+    maxIdle: 20
+    maxActive: 50
+    idleTimeout: 60
+
+# nsq
+nsq:
+  addr: 127.0.0.1:4150
+  addrs:
+    - 127.0.0.1:4161

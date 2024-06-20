@@ -1,0 +1,60 @@
+package data
+
+import (
+	"github.com/sirupsen/logrus"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
+)
+
+func New{{.FunName}}Data() *{{.FunName}}Data {
+	return &{{.FunName}}Data{}
+}
+
+type {{.FunName}}Data struct {
+}
+
+func (s {{.FunName}}Data) List() ([]*po.{{.DbStructName}}, error) {
+	list := make([]*po.{{.DbStructName}}, 0)
+	err := GetMerchantDB().Find(&list).Error
+	if err != nil {
+		logrus.Errorf("{{.FunName}}Data List Err: %s", err.Error())
+		return nil, err
+	}
+	return list, nil
+}
+
+func (s {{.FunName}}Data) Info(id int64) (*po.{{.DbStructName}}, error) {
+	info := &po.{{.DbStructName}}{}
+	err := GetMerchantDB().Find(info, "id = ?", id).Error
+	if err != nil {
+		logrus.Errorf("{{.FunName}}Data Info Err: %s", err.Error())
+		return nil, err
+	}
+	return info, nil
+}
+
+func (s {{.FunName}}Data) Add({{.ParamName}} *po.{{.DbStructName}}) error {
+	err := GetMerchantDB().Model(&po.{{.DbStructName}}{}).Where("id = ?", &{{.ParamName}}.Id).Create(&{{.ParamName}}).Error
+	if err != nil {
+		logrus.Errorf("{{.FunName}}Data Add Err: %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (s {{.FunName}}Data) Edit({{.ParamName}} *po.{{.DbStructName}}) error {
+	err := GetMerchantDB().Model(&po.User{}).Where("id = ?", &{{.ParamName}}.Id).Updates({{.ParamName}}).Error
+	if err != nil {
+		logrus.Errorf("{{.FunName}}Data Edit Err: %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (s {{.FunName}}Data) Delete({{.ParamName}} *po.{{.DbStructName}}) error {
+	err := GetMerchantDB().Where("id = ?", &{{.ParamName}}.Id).Delete(&{{.ParamName}}).Error
+	if err != nil {
+		logrus.Errorf("{{.FunName}}Data Delete Err: %s", err.Error())
+		return err
+	}
+	return nil
+}
