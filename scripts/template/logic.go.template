@@ -40,7 +40,7 @@ func (s {{.FunName}}) Add(c *ginx.Context) {
 	}
 
 	dReq := po.{{.DbStructName}}{}
-	err := copier.Copy(dReq, &req)
+	err := copier.Copy(&dReq, &req)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Add copier Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -68,7 +68,7 @@ func (s {{.FunName}}) Edit(c *ginx.Context) {
 	}
 
 	dReq := po.{{.DbStructName}}{}
-	err := copier.Copy(dReq, &req)
+	err := copier.Copy(&dReq, &req)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Edit copier Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -96,7 +96,7 @@ func (s {{.FunName}}) Delete(c *ginx.Context) {
 	}
 
 	dReq := po.{{.DbStructName}}{}
-	err := copier.Copy(dReq, &req)
+	err := copier.Copy(&dReq, &req)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Delete copier Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)

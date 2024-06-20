@@ -1,10 +1,12 @@
 package logic
 
 import (
-	"github.com/sirupsen/logrus"
 	"os"
 	"text/template"
 
+	"github.com/sirupsen/logrus"
+
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/ginx"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/statusx"
 )
@@ -20,6 +22,7 @@ type TemplateReq struct {
 	FunName      string `json:"fun_name"`
 	DbStructName string `json:"db_struct_name"`
 	ParamName    string `json:"param_name"`
+	FileName     string `json:"file_name"`
 }
 
 func (s Template) Add(c *ginx.Context) {
@@ -31,7 +34,7 @@ func (s Template) Add(c *ginx.Context) {
 	}
 
 	tDataPath := "./scripts/template/data.go.template"
-	tDataOutPath := "./internal/data/" + req.ParamName + ".go"
+	tDataOutPath := "./internal/data/" + req.FileName + ".go"
 	td, err := template.ParseFiles(tDataPath)
 	if err != nil {
 		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
@@ -63,7 +66,7 @@ func (s Template) Add(c *ginx.Context) {
 	}
 
 	tLogicPath := "./scripts/template/logic.go.template"
-	tLogicOutPath := "./internal/logic/" + req.ParamName + ".go"
+	tLogicOutPath := "./internal/logic/" + req.FileName + ".go"
 	tl, err := template.ParseFiles(tLogicPath)
 	if err != nil {
 		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
@@ -86,6 +89,37 @@ func (s Template) Add(c *ginx.Context) {
 		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
+	}
+
+	c.RenderSuccess(nil)
+	return
+}
+
+func (s Template) Test(c *ginx.Context) {
+	logrus.WithFields(logrus.Fields{
+		"SpendTime": 1,
+		"IP":        2,
+	}).Info("--------------------test---------------------")
+
+	logrus.Info("--------------------test---------------------")
+
+	c2 := conn.GetMerchantRDb()
+	if c2 == nil {
+		logrus.Info("redis is nil")
+	}
+
+	c1 := conn.GetClickhouseDB()
+	if c1 == nil {
+		logrus.Info("cliclhouse is nil")
+	}
+
+	c3, err := conn.GetNSQCli()
+	if err != nil {
+
+		logrus.Info("nsq is err", err)
+	}
+	if c3 == nil {
+		logrus.Info("nsq is nil")
 	}
 
 	c.RenderSuccess(nil)

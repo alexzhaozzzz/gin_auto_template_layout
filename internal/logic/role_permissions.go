@@ -10,18 +10,18 @@ import (
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/statusx"
 )
 
-func NewRole() *Role {
-	return &Role{}
+func NewRolePermissions() *RolePermissions {
+	return &RolePermissions{}
 }
 
-type Role struct {
+type RolePermissions struct {
 }
 
-func (s Role) GetList(c *ginx.Context) {
-	d := conn.NewRoleData()
+func (s RolePermissions) GetList(c *ginx.Context) {
+	d := conn.NewRolePermissionsData()
 	list, err := d.List()
 	if err != nil {
-		logrus.Errorf("Role GetList Err: %s", err.Error())
+		logrus.Errorf("RolePermissions GetList Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
@@ -31,26 +31,26 @@ func (s Role) GetList(c *ginx.Context) {
 	return
 }
 
-func (s Role) Add(c *ginx.Context) {
-	req := &dto.SysRoles{}
+func (s RolePermissions) Add(c *ginx.Context) {
+	req := &dto.SysRolePermissions{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		logrus.Errorf("Role Add ShouldBindJSON Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Add ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	dReq := po.SysRoles{}
+	dReq := po.SysRolePermissions{}
 	err := copier.Copy(&dReq, &req)
 	if err != nil {
-		logrus.Errorf("Role Add copier Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Add copier Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	d := conn.NewRoleData()
+	d := conn.NewRolePermissionsData()
 	err = d.Add(&dReq)
 	if err != nil {
-		logrus.Errorf("Role Add Db Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Add Db Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
@@ -59,26 +59,26 @@ func (s Role) Add(c *ginx.Context) {
 	return
 }
 
-func (s Role) Edit(c *ginx.Context) {
-	req := &dto.SysRoles{}
+func (s RolePermissions) Edit(c *ginx.Context) {
+	req := &dto.SysRolePermissions{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		logrus.Errorf("Role Edit ShouldBindJSON Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Edit ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	dReq := po.SysRoles{}
+	dReq := po.SysRolePermissions{}
 	err := copier.Copy(&dReq, &req)
 	if err != nil {
-		logrus.Errorf("Role Edit copier Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Edit copier Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	d := conn.NewRoleData()
+	d := conn.NewRolePermissionsData()
 	err = d.Edit(&dReq)
 	if err != nil {
-		logrus.Errorf("Role Edit Db Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Edit Db Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
@@ -87,26 +87,26 @@ func (s Role) Edit(c *ginx.Context) {
 	return
 }
 
-func (s Role) Delete(c *ginx.Context) {
-	req := &dto.SysRoles{}
+func (s RolePermissions) Delete(c *ginx.Context) {
+	req := &dto.SysRolePermissions{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		logrus.Errorf("Role Delete ShouldBindJSON Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Delete ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	dReq := po.SysRoles{}
+	dReq := po.SysRolePermissions{}
 	err := copier.Copy(&dReq, &req)
 	if err != nil {
-		logrus.Errorf("Role Delete copier Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Delete copier Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	d := conn.NewRoleData()
+	d := conn.NewRolePermissionsData()
 	err = d.Delete(&dReq)
 	if err != nil {
-		logrus.Errorf("Role Delete Db Err: %s", err.Error())
+		logrus.Errorf("RolePermissions Delete Db Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}

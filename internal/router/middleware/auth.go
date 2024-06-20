@@ -14,11 +14,11 @@ import (
 
 // JWTAuth jwt验证
 func JWTAuth() gin.HandlerFunc {
-	secret := viper.GetString(config.PATHJWTSECRET)
+	secret := viper.GetString("jwt.secret")
 	secretKey := []byte(secret) // 替换为你的256位密钥
 	return func(c *gin.Context) {
 		// 从请求头中获取token字符串
-		tokenString := c.GetHeader(config.AUTHORIZATIONKEY)
+		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
 			ginx.NewContext(c).Render(statusx.StatusUnauthorized, "nil", http.StatusUnauthorized)
 			c.Abort()

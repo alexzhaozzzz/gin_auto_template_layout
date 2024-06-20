@@ -36,7 +36,7 @@ func (s User) Login(c *ginx.Context) {
 	}
 
 	se := viper.GetString("jwt.secret")
-	t := viper.GetInt32("jwt.tokenExpire")
+	t := viper.GetInt32("jwt.token_expire")
 	i := viper.GetString("jwt.issuer")
 	su := viper.GetString("jwt.sub")
 	ext := &auth.JwtExt{

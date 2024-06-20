@@ -15,7 +15,7 @@ func InitServer() *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 
 	// 自定义错误处理
-	r.Use(middleware.CustomError)
+	//r.Use(middleware.CustomError)
 	// NoCache is a middleware function that appends headers
 	r.Use(middleware.NoCache)
 	// 跨域处理

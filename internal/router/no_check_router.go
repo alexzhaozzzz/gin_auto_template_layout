@@ -14,11 +14,11 @@ func noCheckProRouter(r *gin.RouterGroup) {
 	v1 := r.Group("/")
 	{
 		template := logic.Template{}
-		//user := logic.NewUser()
+		user := logic.NewUser()
 
 		v1.POST("/t_add", ginx.Handle(template.Add))
+		v1.POST("/test", ginx.Handle(template.Test))
 
-		//v1.POST("/login", ginx.Handle(user.Login))
-		//v1.POST("/login", ginx.Handle(user.Login))
+		v1.POST("/login", ginx.Handle(user.Login))
 	}
 }

@@ -2,76 +2,55 @@ package bootstrap
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
-	"os"
-	"path/filepath"
-	"time"
-
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"gopkg.in/natefinch/lumberjack.v2"
+	"time"
 )
 
-func InitLog() *logrus.Logger {
-	// 初始化Logger
-	logger := logrus.New()
+func InitLog() {
+	level := viper.GetString("log.log_level")
+	dir := viper.GetString("log.log_dir")
+	prefix := viper.GetString("log.log_prefix")
+	maxSize := viper.GetInt("log.max_size")
 
-	lv := viper.GetInt32("log.log_level")
-	logger.SetLevel(logrus.Level(lv))
+	// 设置日志格式。
+	logrus.SetFormatter(&logrus.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05.000",
+	})
 
-	// 定义日志文件的基础路径，不包含日期部分
-	path := viper.GetString("log.log_dir")
-	// 创建并添加DailyRotateHook
-	dailyRotateHook := &DailyRotateHook{
-		Logger:      logger,
-		LogFilePath: path,
+	switch level {
+	case "trace":
+		logrus.SetLevel(logrus.TraceLevel)
+	case "debug":
+		logrus.SetLevel(logrus.DebugLevel)
+	case "info":
+		logrus.SetLevel(logrus.InfoLevel)
+	case "warn":
+		logrus.SetLevel(logrus.WarnLevel)
+	case "error":
+		logrus.SetLevel(logrus.ErrorLevel)
+	case "fatal":
+		logrus.SetLevel(logrus.FatalLevel)
+	case "panic":
+		logrus.SetLevel(logrus.PanicLevel)
 	}
-	logger.AddHook(dailyRotateHook)
+	logrus.SetReportCaller(true) // 打印文件、行号和主调函数。
 
-	return logger
-}
-
-// DailyRotateHook 自定义的日志按天分割Hook
-type DailyRotateHook struct {
-	*logrus.Logger
-	LogFilePath string
-}
-
-// Fire 实现logrus.Hook接口的Fire方法
-func (hook *DailyRotateHook) Fire(entry *logrus.Entry) error {
-	// 根据日期构建日志文件路径
-	currentTime := time.Now()
-	logFileName := fmt.Sprintf("%s-%d-%02d-%02d.log", hook.LogFilePath, currentTime.Year(), currentTime.Month(), currentTime.Day())
-
-	// 确保日志目录存在
-	if err := os.MkdirAll(filepath.Dir(logFileName), 0755); err != nil {
-		return fmt.Errorf("failed to create log directory: %v", err)
-	}
-
-	// 打开或创建日志文件
-	file, err := os.OpenFile(logFileName, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to open log file: %v", err)
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			return
-		}
-	}(file)
-
-	// 写入日志
-	data, err := entry.Bytes()
-	if err != nil {
-		return fmt.Errorf("get entry Bytes err: %v", err)
+	now := time.Now()
+	// 格式化当前时间为"2006-01-02 15:04:05"的格式
+	formattedTime := now.Format(time.DateOnly)
+	path := fmt.Sprintf("%s/%s-%s.log", dir, prefix, formattedTime)
+	// 实现日志滚动。
+	logger := &lumberjack.Logger{
+		Filename:   path,    // 日志输出文件路径。
+		MaxSize:    maxSize, // 日志文件最大 size(MB)，缺省 100MB。
+		MaxBackups: 10,      // 最大过期日志保留的个数。
+		MaxAge:     30,      // 保留过期文件的最大时间间隔，单位是天。
+		LocalTime:  true,    // 是否使用本地时间来命名备份的日志。
 	}
 
-	if _, err := entry.WriterLevel(logrus.DebugLevel).Write(data); err != nil {
-		return fmt.Errorf("failed to write log entry: %v", err)
-	}
+	logrus.SetOutput(logger)
 
-	return nil
-}
-
-// Levels 实现logrus.Hook接口的Levels方法
-func (hook *DailyRotateHook) Levels() []logrus.Level {
-	return logrus.AllLevels
+	return
 }

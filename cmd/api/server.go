@@ -19,7 +19,7 @@ func Run() {
 		panic("load config error: " + err.Error())
 	}
 
-	_ = bootstrap.InitLog()
+	bootstrap.InitLog()
 
 	r := server.InitServer()
 

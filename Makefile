@@ -1,6 +1,6 @@
 #GOPATH:=$(shell go env GOPATH)
 #VERSION=$(shell git describe --tags --always)
-TABLES = sys_permissions
+TABLES = merchant_channel_bind
 
 .PHONY: sql2file
 # init sql2file
@@ -8,6 +8,11 @@ sql2file:
 	@for item in $(TABLES); do \
   		rm -f ./scripts/sql/$$item.sql ; \
 		mysqldump --compact --skip-add-drop-table -d -h 192.168.1.22 -P 3306 -uback -pBack_789456123 merchant $$item > ./scripts/sql/$$item.sql; \
+		sed '1d' ./scripts/sql/$$item.sql > ./scripts/sql/$$item.sql.new; \
+		sed '1d' ./scripts/sql/$$item.sql.new > ./scripts/sql/$$item.sql; \
+		sed '$$d' ./scripts/sql/$$item.sql > ./scripts/sql/$$item.sql.new; \
+		cp ./scripts/sql/$$item.sql.new ./scripts/sql/$$item.sql ; \
+		rm -f ./scripts/sql/$$item.sql.new ; \
 	done
 
 .PHONY: sql2dto
@@ -15,7 +20,7 @@ sql2file:
 sql2dto:
 	@for item in $(TABLES); do \
   		rm -f ./internal/logic/dto/$$item.go ; \
-		sql2struct -sf=./scripts/sql/$$item.sql -gorm=false -db=false -form=false -with-tablename-func=false -package="dto" >> ./internal/logic/dto/$$item.go ; \
+		sql2struct -sf=./scripts/sql/$$item.sql -gorm=false -db=false -form=false -with-tablename-func=false -package="dto" > ./internal/logic/dto/$$item.go ; \
 	done
 
 .PHONY: sql2po
