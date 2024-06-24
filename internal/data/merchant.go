@@ -25,7 +25,7 @@ func (s MerchantData) List() ([]*po.MerchantList, error) {
 
 func (s MerchantData) Info(id int64) (*po.MerchantList, error) {
 	info := &po.MerchantList{}
-	err := conn.GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("MerchantData Info Err: %s", err.Error())
 		return nil, err
@@ -34,7 +34,8 @@ func (s MerchantData) Info(id int64) (*po.MerchantList, error) {
 }
 
 func (s MerchantData) Add(merc *po.MerchantList) error {
-	err := conn.GetMerchantDB().Model(&po.MerchantList{}).Where("id = ?", &merc.Id).Create(&merc).Error
+	merc.Id = 0
+	err := conn.GetMerchantDB().Model(&po.MerchantList{}).Where("id = ?", merc.Id).Create(merc).Error
 	if err != nil {
 		logrus.Errorf("MerchantData Add Err: %s", err.Error())
 		return err
@@ -43,7 +44,7 @@ func (s MerchantData) Add(merc *po.MerchantList) error {
 }
 
 func (s MerchantData) Edit(merc *po.MerchantList) error {
-	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &merc.Id).Updates(merc).Error
+	err := conn.GetMerchantDB().Model(&po.MerchantList{}).Where("id = ?", merc.Id).Updates(merc).Error
 	if err != nil {
 		logrus.Errorf("MerchantData Edit Err: %s", err.Error())
 		return err
@@ -52,7 +53,7 @@ func (s MerchantData) Edit(merc *po.MerchantList) error {
 }
 
 func (s MerchantData) Delete(merc *po.MerchantList) error {
-	err := conn.GetMerchantDB().Where("id = ?", &merc.Id).Delete(&merc).Error
+	err := conn.GetMerchantDB().Where("id = ?", merc.Id).Delete(merc).Error
 	if err != nil {
 		logrus.Errorf("MerchantData Delete Err: %s", err.Error())
 		return err

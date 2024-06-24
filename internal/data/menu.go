@@ -25,7 +25,7 @@ func (s MenuData) List() ([]*po.SysMenu, error) {
 
 func (s MenuData) Info(id int64) (*po.SysMenu, error) {
 	info := &po.SysMenu{}
-	err := conn.GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("MenuData Info Err: %s", err.Error())
 		return nil, err
@@ -34,7 +34,8 @@ func (s MenuData) Info(id int64) (*po.SysMenu, error) {
 }
 
 func (s MenuData) Add(menu *po.SysMenu) error {
-	err := conn.GetMerchantDB().Model(&po.SysMenu{}).Where("id = ?", &menu.Id).Create(&menu).Error
+	menu.Id = 0
+	err := conn.GetMerchantDB().Model(&po.SysMenu{}).Create(menu).Error
 	if err != nil {
 		logrus.Errorf("MenuData Add Err: %s", err.Error())
 		return err
@@ -43,7 +44,7 @@ func (s MenuData) Add(menu *po.SysMenu) error {
 }
 
 func (s MenuData) Edit(menu *po.SysMenu) error {
-	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &menu.Id).Updates(menu).Error
+	err := conn.GetMerchantDB().Model(&po.SysMenu{}).Where("id = ?", menu.Id).Updates(menu).Error
 	if err != nil {
 		logrus.Errorf("MenuData Edit Err: %s", err.Error())
 		return err
@@ -52,7 +53,7 @@ func (s MenuData) Edit(menu *po.SysMenu) error {
 }
 
 func (s MenuData) Delete(menu *po.SysMenu) error {
-	err := conn.GetMerchantDB().Where("id = ?", &menu.Id).Delete(&menu).Error
+	err := conn.GetMerchantDB().Where("id = ?", menu.Id).Delete(menu).Error
 	if err != nil {
 		logrus.Errorf("MenuData Delete Err: %s", err.Error())
 		return err

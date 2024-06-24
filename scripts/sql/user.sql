@@ -1,5 +1,3 @@
-
-
 CREATE TABLE `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL,
@@ -17,4 +15,3 @@ CREATE TABLE `user` (
   `last_login_time` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-

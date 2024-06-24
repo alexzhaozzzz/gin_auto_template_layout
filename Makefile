@@ -1,6 +1,10 @@
-#GOPATH:=$(shell go env GOPATH)
-#VERSION=$(shell git describe --tags --always)
-TABLES = merchant_channel_bind
+APP_NAME = api
+GOOS = linux
+GOARCH = amd64
+VERSION=$(shell git describe --tags --always)
+
+#以下是生成需要的表名-空格间隔
+TABLES = sys_menu
 
 .PHONY: sql2file
 # init sql2file
@@ -31,8 +35,20 @@ sql2po:
         sql2struct -sf=./scripts/sql/$$item.sql -db=false -form=false -with-tablename-func=true -package="po" >> ./internal/data/po/$$item.go ; \
 	done
 
+.PHONY: build
+# go build
+build:
+	mkdir -p ./bin  ; \
+	go build -buildvcs=false -o ./bin/binary ./ \
 
-# show help
+
+.PHONY: package
+# go package
+package:
+	cp -R configs ./bin/
+
+
+# show HELP
 help:
 	@echo ''
 	@echo 'Usage:'

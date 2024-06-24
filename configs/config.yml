@@ -24,10 +24,10 @@ log:
 
 data:
   mysql-merchant:
-    host: 192.168.1.22
+    host: 192.168.152.129
     port: 3306
-    user: back
-    password: Back_789456123
+    user: root
+    password: 123456
     database: merchant
     max_idle: 20
     max_open: 20

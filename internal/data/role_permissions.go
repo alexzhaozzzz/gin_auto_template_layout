@@ -13,9 +13,9 @@ func NewRolePermissionsData() *RolePermissionsData {
 type RolePermissionsData struct {
 }
 
-func (s RolePermissionsData) List() ([]*po.SysRolePermissions, error) {
+func (s RolePermissionsData) ListByRoleId(roleId int64) ([]*po.SysRolePermissions, error) {
 	list := make([]*po.SysRolePermissions, 0)
-	err := conn.GetMerchantDB().Find(&list).Error
+	err := conn.GetMerchantDB().Where("role_id = ?", roleId).Find(&list).Error
 	if err != nil {
 		logrus.Errorf("RolePermissionsData List Err: %s", err.Error())
 		return nil, err
@@ -25,7 +25,7 @@ func (s RolePermissionsData) List() ([]*po.SysRolePermissions, error) {
 
 func (s RolePermissionsData) Info(id int64) (*po.SysRolePermissions, error) {
 	info := &po.SysRolePermissions{}
-	err := conn.GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("RolePermissionsData Info Err: %s", err.Error())
 		return nil, err
@@ -34,7 +34,8 @@ func (s RolePermissionsData) Info(id int64) (*po.SysRolePermissions, error) {
 }
 
 func (s RolePermissionsData) Add(rp *po.SysRolePermissions) error {
-	err := conn.GetMerchantDB().Model(&po.SysRolePermissions{}).Where("id = ?", &rp.Id).Create(&rp).Error
+	rp.Id = 0
+	err := conn.GetMerchantDB().Model(&po.SysRolePermissions{}).Create(rp).Error
 	if err != nil {
 		logrus.Errorf("RolePermissionsData Add Err: %s", err.Error())
 		return err
@@ -43,7 +44,7 @@ func (s RolePermissionsData) Add(rp *po.SysRolePermissions) error {
 }
 
 func (s RolePermissionsData) Edit(rp *po.SysRolePermissions) error {
-	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &rp.Id).Updates(rp).Error
+	err := conn.GetMerchantDB().Model(&po.SysRolePermissions{}).Where("id = ?", rp.Id).Updates(rp).Error
 	if err != nil {
 		logrus.Errorf("RolePermissionsData Edit Err: %s", err.Error())
 		return err
@@ -51,8 +52,17 @@ func (s RolePermissionsData) Edit(rp *po.SysRolePermissions) error {
 	return nil
 }
 
-func (s RolePermissionsData) Delete(rp *po.SysRolePermissions) error {
-	err := conn.GetMerchantDB().Where("id = ?", &rp.Id).Delete(&rp).Error
+func (s RolePermissionsData) DeleteByRoleId(rp *po.SysRolePermissions) error {
+	err := conn.GetMerchantDB().Where("role_id = ?", rp.RoleId).Delete(rp).Error
+	if err != nil {
+		logrus.Errorf("RolePermissionsData Delete Err: %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (s RolePermissionsData) DeleteByRoleIdAndPermissionId(rp *po.SysRolePermissions) error {
+	err := conn.GetMerchantDB().Where("role_id = ? AND permission_id = ?", rp.RoleId, rp.PermissionId).Delete(rp).Error
 	if err != nil {
 		logrus.Errorf("RolePermissionsData Delete Err: %s", err.Error())
 		return err

@@ -12,6 +12,7 @@ import (
 type JwtExt struct {
 	UId        uint64 `json:"u_id"`
 	MerchantId uint64 `json:"merchant_id"`
+	RoleId     uint64 `json:"role_id"`
 }
 
 func NewJwt(secret, sub, name string, expTime int32, ext *JwtExt) string {
@@ -46,10 +47,10 @@ func GetJwtExt(ctx *ginx.Context) (*JwtExt, bool) {
 		return nil, false
 	}
 
-	extInfo, ok := ext.(JwtExt)
-	if !ok {
+	info, ok := ext.(JwtExt)
+	if !ok || info.UId <= 0 {
 		return nil, false
 	}
 
-	return &extInfo, true
+	return &info, true
 }

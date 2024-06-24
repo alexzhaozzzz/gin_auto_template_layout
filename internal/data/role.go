@@ -25,7 +25,7 @@ func (s RoleData) List() ([]*po.SysRoles, error) {
 
 func (s RoleData) Info(id int64) (*po.SysRoles, error) {
 	info := &po.SysRoles{}
-	err := conn.GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("RoleData Info Err: %s", err.Error())
 		return nil, err
@@ -33,17 +33,18 @@ func (s RoleData) Info(id int64) (*po.SysRoles, error) {
 	return info, nil
 }
 
-func (s RoleData) Add(ro *po.SysRoles) error {
-	err := conn.GetMerchantDB().Model(&po.SysRoles{}).Where("id = ?", &ro.Id).Create(&ro).Error
+func (s RoleData) Add(ro *po.SysRoles) (error, int64) {
+	ro.Id = 0
+	err := conn.GetMerchantDB().Model(&po.SysRoles{}).Create(ro).Error
 	if err != nil {
 		logrus.Errorf("RoleData Add Err: %s", err.Error())
-		return err
+		return err, 0
 	}
-	return nil
+	return nil, ro.Id
 }
 
 func (s RoleData) Edit(ro *po.SysRoles) error {
-	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &ro.Id).Updates(ro).Error
+	err := conn.GetMerchantDB().Model(&po.SysRoles{}).Where("id = ?", ro.Id).Updates(ro).Error
 	if err != nil {
 		logrus.Errorf("RoleData Edit Err: %s", err.Error())
 		return err
@@ -52,7 +53,7 @@ func (s RoleData) Edit(ro *po.SysRoles) error {
 }
 
 func (s RoleData) Delete(ro *po.SysRoles) error {
-	err := conn.GetMerchantDB().Where("id = ?", &ro.Id).Delete(&ro).Error
+	err := conn.GetMerchantDB().Where("id = ?", ro.Id).Delete(ro).Error
 	if err != nil {
 		logrus.Errorf("RoleData Delete Err: %s", err.Error())
 		return err

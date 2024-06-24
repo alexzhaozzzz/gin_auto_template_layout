@@ -1,12 +1,12 @@
 package logic
 
 import (
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"os"
 	"text/template"
 
 	"github.com/sirupsen/logrus"
 
-	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/ginx"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/statusx"
 )

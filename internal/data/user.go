@@ -44,6 +44,7 @@ func (s UserData) InfoByName(name string) (*po.User, error) {
 }
 
 func (s UserData) Add(user *po.User) error {
+	user.Id = 0
 	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &user.Id).Create(&user).Error
 	if err != nil {
 		logrus.Errorf("UserData Add Err: %s", err.Error())

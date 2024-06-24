@@ -13,9 +13,9 @@ func NewRoleUsersData() *RoleUsersData {
 type RoleUsersData struct {
 }
 
-func (s RoleUsersData) List() ([]*po.SysRoleUsers, error) {
+func (s RoleUsersData) ListByRoleId(roleId int64) ([]*po.SysRoleUsers, error) {
 	list := make([]*po.SysRoleUsers, 0)
-	err := conn.GetMerchantDB().Find(&list).Error
+	err := conn.GetMerchantDB().Where("role_id = ?", roleId).Find(&list).Error
 	if err != nil {
 		logrus.Errorf("RoleUsersData List Err: %s", err.Error())
 		return nil, err
@@ -23,9 +23,19 @@ func (s RoleUsersData) List() ([]*po.SysRoleUsers, error) {
 	return list, nil
 }
 
+func (s RoleUsersData) InfoByUserId(uId int64) (*po.SysRoleUsers, error) {
+	info := &po.SysRoleUsers{}
+	err := conn.GetMerchantDB().First(info, "user_id = ?", uId).Error
+	if err != nil {
+		logrus.Errorf("RoleUsersData Info Err: %s", err.Error())
+		return nil, err
+	}
+	return info, nil
+}
+
 func (s RoleUsersData) Info(id int64) (*po.SysRoleUsers, error) {
 	info := &po.SysRoleUsers{}
-	err := conn.GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("RoleUsersData Info Err: %s", err.Error())
 		return nil, err
@@ -34,7 +44,8 @@ func (s RoleUsersData) Info(id int64) (*po.SysRoleUsers, error) {
 }
 
 func (s RoleUsersData) Add(ru *po.SysRoleUsers) error {
-	err := conn.GetMerchantDB().Model(&po.SysRoleUsers{}).Where("id = ?", &ru.Id).Create(&ru).Error
+	ru.Id = 0
+	err := conn.GetMerchantDB().Model(&po.SysRoleUsers{}).Create(ru).Error
 	if err != nil {
 		logrus.Errorf("RoleUsersData Add Err: %s", err.Error())
 		return err
@@ -43,7 +54,7 @@ func (s RoleUsersData) Add(ru *po.SysRoleUsers) error {
 }
 
 func (s RoleUsersData) Edit(ru *po.SysRoleUsers) error {
-	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &ru.Id).Updates(ru).Error
+	err := conn.GetMerchantDB().Model(&po.SysRoleUsers{}).Where("id = ?", ru.Id).Updates(ru).Error
 	if err != nil {
 		logrus.Errorf("RoleUsersData Edit Err: %s", err.Error())
 		return err
@@ -51,8 +62,17 @@ func (s RoleUsersData) Edit(ru *po.SysRoleUsers) error {
 	return nil
 }
 
-func (s RoleUsersData) Delete(ru *po.SysRoleUsers) error {
-	err := conn.GetMerchantDB().Where("id = ?", &ru.Id).Delete(&ru).Error
+func (s RoleUsersData) DeleteByRoleId(ru *po.SysRoleUsers) error {
+	err := conn.GetMerchantDB().Where("role_id = ?", ru.RoleId).Delete(ru).Error
+	if err != nil {
+		logrus.Errorf("RoleUsersData Delete Err: %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (s RoleUsersData) DeleteByRoleIdAndUserId(ru *po.SysRoleUsers) error {
+	err := conn.GetMerchantDB().Where("role_id = ? AND user_id = ?", ru.RoleId, ru.UserId).Delete(ru).Error
 	if err != nil {
 		logrus.Errorf("RoleUsersData Delete Err: %s", err.Error())
 		return err

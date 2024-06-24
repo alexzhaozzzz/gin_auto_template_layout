@@ -1,13 +1,16 @@
 package logic
 
 import (
+	"errors"
 	"github.com/jinzhu/copier"
 	"github.com/sirupsen/logrus"
-	conn "gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/dto"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/bootstrap"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/ginx"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/statusx"
+	"strconv"
 )
 
 func NewRole() *Role {
@@ -18,7 +21,7 @@ type Role struct {
 }
 
 func (s Role) GetList(c *ginx.Context) {
-	d := conn.NewRoleData()
+	d := data.NewRoleData()
 	list, err := d.List()
 	if err != nil {
 		logrus.Errorf("Role GetList Err: %s", err.Error())
@@ -26,31 +29,76 @@ func (s Role) GetList(c *ginx.Context) {
 		return
 	}
 
-	data := map[string]interface{}{"list": list}
-	c.RenderSuccess(data)
+	resp := map[string]interface{}{"list": list}
+	c.RenderSuccess(resp)
+	return
+}
+
+func (s Role) GetInfo(c *ginx.Context) {
+	id := c.Param("id")
+	if id == "" {
+		logrus.Errorf("Menu GetInfo Param Err: Id Is Empty")
+		c.Render(statusx.StatusInvalidRequest, nil)
+	}
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		logrus.Errorf("Menu GetInfo Param Atoi Err: %s", err)
+		c.Render(statusx.StatusInvalidRequest, nil)
+		return
+	}
+
+	d := data.NewRoleData()
+	info, err := d.Info(int64(idInt))
+	if err != nil {
+		logrus.Errorf("Role GetInfo Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	resp := map[string]interface{}{"info": info}
+	c.RenderSuccess(resp)
 	return
 }
 
 func (s Role) Add(c *ginx.Context) {
-	req := &dto.SysRoles{}
+	req := &dto.SysRolesChange{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Role Add ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	dReq := po.SysRoles{}
-	err := copier.Copy(&dReq, &req)
+	dReq := po.SysRoles{
+		Id:         0,
+		Guid:       req.Role.Guid,
+		MerchantId: req.Role.MerchantId,
+		Name:       req.Role.Name,
+		Code:       req.Role.Code,
+	}
+	d := data.NewRoleData()
+	err, roleId := d.Add(&dReq)
 	if err != nil {
-		logrus.Errorf("Role Add copier Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
+		logrus.Errorf("Role Add Db Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
 
-	d := conn.NewRoleData()
-	err = d.Add(&dReq)
+	if roleId <= 0 {
+		logrus.Errorf("Role Add Db Err: roleId <= 0")
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	err = s.MenuChange(roleId, &req.RoleMenu)
 	if err != nil {
-		logrus.Errorf("Role Add Db Err: %s", err.Error())
+		logrus.Errorf("Role MenuChange Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	err = s.PermissionsChange(roleId, &req.RolePermissions)
+	if err != nil {
+		logrus.Errorf("Role PermissionsChange Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
@@ -60,25 +108,38 @@ func (s Role) Add(c *ginx.Context) {
 }
 
 func (s Role) Edit(c *ginx.Context) {
-	req := &dto.SysRoles{}
+	req := &dto.SysRolesChange{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Role Edit ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	dReq := po.SysRoles{}
-	err := copier.Copy(&dReq, &req)
+	dReq := po.SysRoles{
+		Id:         0,
+		Guid:       req.Role.Guid,
+		MerchantId: req.Role.MerchantId,
+		Name:       req.Role.Name,
+		Code:       req.Role.Code,
+	}
+	d := data.NewRoleData()
+	err := d.Edit(&dReq)
 	if err != nil {
-		logrus.Errorf("Role Edit copier Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
+		logrus.Errorf("Role Edit Db Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
 
-	d := conn.NewRoleData()
-	err = d.Edit(&dReq)
+	err = s.MenuChange(req.Role.Id, &req.RoleMenu)
 	if err != nil {
-		logrus.Errorf("Role Edit Db Err: %s", err.Error())
+		logrus.Errorf("Role MenuChange Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	err = s.PermissionsChange(req.Role.Id, &req.RolePermissions)
+	if err != nil {
+		logrus.Errorf("Role PermissionsChange Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
@@ -103,7 +164,7 @@ func (s Role) Delete(c *ginx.Context) {
 		return
 	}
 
-	d := conn.NewRoleData()
+	d := data.NewRoleData()
 	err = d.Delete(&dReq)
 	if err != nil {
 		logrus.Errorf("Role Delete Db Err: %s", err.Error())
@@ -111,6 +172,128 @@ func (s Role) Delete(c *ginx.Context) {
 		return
 	}
 
+	dp := data.NewRolePermissionsData()
+	dpReq := po.SysRolePermissions{
+		RoleId: req.Id,
+	}
+	err = dp.DeleteByRoleId(&dpReq)
+	if err != nil {
+		logrus.Errorf("Role Delete Permissions DeleteByRoleId Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	dm := data.NewRoleMenuData()
+	dmReq := po.SysRoleMenu{
+		RoleId: req.Id,
+	}
+	err = dm.DeleteByRoleId(&dmReq)
+	if err != nil {
+		logrus.Errorf("Role Delete Menu DeleteByRoleId Err: %s", err.Error())
+		return
+	}
+
+	dc := data.NewCasbinRuleData()
+	delDcReq := po.CasbinRule{
+		V0: strconv.FormatInt(req.Id, 10),
+	}
+	err = dc.DeleteByV0(&delDcReq)
+	if err != nil {
+		logrus.Errorf("Role MenuChange DeleteByV0 Err: %s", err.Error())
+		return
+	}
+
 	c.RenderSuccess(nil)
 	return
+}
+
+func (s Role) PermissionsChange(roleId int64, req *dto.RolePermissions) error {
+	if len(req.PermissionIds) <= 0 {
+		logrus.Errorf("Role PermissionsChange Check Err: len(req.PermissionIds) <= 0")
+		return errors.New("PermissionIds Len Is Nil")
+	}
+
+	d := data.NewRolePermissionsData()
+	delReq := po.SysRolePermissions{
+		RoleId: roleId,
+	}
+	err := d.DeleteByRoleId(&delReq)
+	if err != nil {
+		logrus.Errorf("Role PermissionsChange DeleteByRoleId Err: %s", err.Error())
+		return err
+	}
+
+	dc := data.NewCasbinRuleData()
+	delDcReq := po.CasbinRule{
+		V0: strconv.FormatInt(roleId, 10),
+	}
+	err = dc.DeleteByV0(&delDcReq)
+	if err != nil {
+		logrus.Errorf("Role MenuChange DeleteByV0 Err: %s", err.Error())
+		return err
+	}
+
+	permList := bootstrap.PermConfigList
+
+	for _, v := range req.PermissionIds {
+		addReq := po.SysRolePermissions{
+			RoleId:       roleId,
+			PermissionId: v,
+		}
+		err = d.Add(&addReq)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{"param": addReq}).Errorf(err.Error())
+			continue
+		}
+
+		for _, v1 := range permList {
+			logrus.Errorf("=================test========%d=====%d====", v1.Id, v)
+			if v1.Id == v {
+				addCrReq := po.CasbinRule{
+					Ptype: "p",
+					V0:    strconv.FormatInt(roleId, 10),
+					V1:    v1.Path,
+					V2:    v1.Method,
+				}
+				err = dc.Add(&addCrReq)
+				if err != nil {
+					logrus.Errorf("Role MenuChange CasbinRule Add Db Err: %s", err.Error())
+					continue
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func (s Role) MenuChange(roleId int64, req *dto.RoleMenu) error {
+	if len(req.MenuIds) <= 0 {
+		logrus.Errorf("Role MenuChange Check Err: len(req.MenuIds) <= 0")
+		return errors.New("req MenuIds Nil")
+	}
+
+	d := data.NewRoleMenuData()
+	delReq := po.SysRoleMenu{
+		RoleId: roleId,
+	}
+	err := d.DeleteByRoleId(&delReq)
+	if err != nil {
+		logrus.Errorf("Role MenuChange DeleteByRoleId Err: %s", err.Error())
+		return err
+	}
+
+	for _, v := range req.MenuIds {
+		addReq := po.SysRoleMenu{
+			RoleId: roleId,
+			MenuId: v,
+		}
+		err = d.Add(&addReq)
+		if err != nil {
+			logrus.Errorf("Role MenuChange SysRoleMenu Add Db Err: %s", err.Error())
+			continue
+		}
+	}
+
+	return nil
 }

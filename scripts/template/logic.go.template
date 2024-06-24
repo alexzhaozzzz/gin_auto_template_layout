@@ -3,7 +3,7 @@ package logic
 import (
 	"github.com/jinzhu/copier"
 	"github.com/sirupsen/logrus"
-	conn "gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/dto"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/ginx"
@@ -18,7 +18,7 @@ type {{.FunName}} struct {
 }
 
 func (s {{.FunName}}) GetList(c *ginx.Context) {
-	d := conn.New{{.FunName}}Data()
+	d := data.New{{.FunName}}Data()
 	list, err := d.List()
 	if err != nil {
 		logrus.Errorf("{{.FunName}} GetList Err: %s", err.Error())
@@ -27,6 +27,27 @@ func (s {{.FunName}}) GetList(c *ginx.Context) {
 	}
 
 	data := map[string]interface{}{"list": list}
+	c.RenderSuccess(data)
+	return
+}
+
+func (s {{.FunName}}) GetInfo(c *ginx.Context) {
+	req := &dto.{{.DbStructName}}{}
+	if err := c.ShouldBindJSON(req); err != nil {
+		logrus.Errorf("{{.FunName}} GetInfo ShouldBindJSON Err: %s", err.Error())
+		c.Render(statusx.StatusInvalidRequest, nil)
+		return
+	}
+
+	d := data.New{{.FunName}}Data()
+	info, err := d.Info(req.Id)
+	if err != nil {
+		logrus.Errorf("{{.FunName}} GetInfo Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	data := map[string]interface{}{"info": info}
 	c.RenderSuccess(data)
 	return
 }
@@ -47,7 +68,7 @@ func (s {{.FunName}}) Add(c *ginx.Context) {
 		return
 	}
 
-	d := conn.New{{.FunName}}Data()
+	d := data.New{{.FunName}}Data()
 	err = d.Add(&dReq)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Add Db Err: %s", err.Error())
@@ -75,7 +96,7 @@ func (s {{.FunName}}) Edit(c *ginx.Context) {
 		return
 	}
 
-	d := conn.New{{.FunName}}Data()
+	d := data.New{{.FunName}}Data()
 	err = d.Edit(&dReq)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Edit Db Err: %s", err.Error())
@@ -103,7 +124,7 @@ func (s {{.FunName}}) Delete(c *ginx.Context) {
 		return
 	}
 
-	d := conn.New{{.FunName}}Data()
+	d := data.New{{.FunName}}Data()
 	err = d.Delete(&dReq)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Delete Db Err: %s", err.Error())

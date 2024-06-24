@@ -1,5 +1,3 @@
-
-
 CREATE TABLE `sys_roles` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `guid` varchar(100) NOT NULL,
@@ -10,4 +8,3 @@ CREATE TABLE `sys_roles` (
   `update_time` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色';
-

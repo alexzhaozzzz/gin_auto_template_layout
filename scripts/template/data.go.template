@@ -2,6 +2,7 @@ package data
 
 import (
 	"github.com/sirupsen/logrus"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
 )
 
@@ -14,7 +15,7 @@ type {{.FunName}}Data struct {
 
 func (s {{.FunName}}Data) List() ([]*po.{{.DbStructName}}, error) {
 	list := make([]*po.{{.DbStructName}}, 0)
-	err := GetMerchantDB().Find(&list).Error
+	err := conn.GetMerchantDB().Find(&list).Error
 	if err != nil {
 		logrus.Errorf("{{.FunName}}Data List Err: %s", err.Error())
 		return nil, err
@@ -24,7 +25,7 @@ func (s {{.FunName}}Data) List() ([]*po.{{.DbStructName}}, error) {
 
 func (s {{.FunName}}Data) Info(id int64) (*po.{{.DbStructName}}, error) {
 	info := &po.{{.DbStructName}}{}
-	err := GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("{{.FunName}}Data Info Err: %s", err.Error())
 		return nil, err
@@ -33,7 +34,8 @@ func (s {{.FunName}}Data) Info(id int64) (*po.{{.DbStructName}}, error) {
 }
 
 func (s {{.FunName}}Data) Add({{.ParamName}} *po.{{.DbStructName}}) error {
-	err := GetMerchantDB().Model(&po.{{.DbStructName}}{}).Where("id = ?", &{{.ParamName}}.Id).Create(&{{.ParamName}}).Error
+    {{.ParamName}}.Id = 0
+	err := conn.GetMerchantDB().Model(&po.{{.DbStructName}}{}).Create({{.ParamName}}).Error
 	if err != nil {
 		logrus.Errorf("{{.FunName}}Data Add Err: %s", err.Error())
 		return err
@@ -42,7 +44,7 @@ func (s {{.FunName}}Data) Add({{.ParamName}} *po.{{.DbStructName}}) error {
 }
 
 func (s {{.FunName}}Data) Edit({{.ParamName}} *po.{{.DbStructName}}) error {
-	err := GetMerchantDB().Model(&po.User{}).Where("id = ?", &{{.ParamName}}.Id).Updates({{.ParamName}}).Error
+	err := conn.GetMerchantDB().Model(&po.{{.DbStructName}}{}).Where("id = ?", {{.ParamName}}.Id).Updates({{.ParamName}}).Error
 	if err != nil {
 		logrus.Errorf("{{.FunName}}Data Edit Err: %s", err.Error())
 		return err
@@ -51,7 +53,7 @@ func (s {{.FunName}}Data) Edit({{.ParamName}} *po.{{.DbStructName}}) error {
 }
 
 func (s {{.FunName}}Data) Delete({{.ParamName}} *po.{{.DbStructName}}) error {
-	err := GetMerchantDB().Where("id = ?", &{{.ParamName}}.Id).Delete(&{{.ParamName}}).Error
+	err := conn.GetMerchantDB().Where("id = ?", {{.ParamName}}.Id).Delete({{.ParamName}}).Error
 	if err != nil {
 		logrus.Errorf("{{.FunName}}Data Delete Err: %s", err.Error())
 		return err

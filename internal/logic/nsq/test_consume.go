@@ -3,11 +3,10 @@ package nsq
 import (
 	"github.com/nsqio/go-nsq"
 	"github.com/sirupsen/logrus"
-	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 )
 
 func AddTestConsumer(topic, channel string) error {
-	client, err := conn.GetNSQCli()
+	client, err := data.GetNSQCli()
 	if err != nil {
 		logrus.Errorf("AddTestConsumer GetNSQCli Err: %s", err)
 		return err

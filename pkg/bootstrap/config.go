@@ -1,13 +1,20 @@
 package bootstrap
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"
+	"os"
 )
 
-//func init() {
-//	flag.Parse()
-//}
+var PermConfigList []PermissionConfig
+
+type PermissionConfig struct {
+	Id     int64  `json:"id"`
+	Name   string `json:"name"`
+	Path   string `json:"path"`
+	Method string `json:"method"`
+}
 
 // LoadConfig ...
 func LoadConfig(flagPath *string) error {
@@ -26,5 +33,27 @@ func LoadConfig(flagPath *string) error {
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}
 
+	LoadPermConfigFromJson()
+
 	return nil
+}
+
+func LoadPermConfigFromJson() {
+	// 读取JSON文件
+	jsonFile, err := os.ReadFile("./configs/perm_config.json")
+	if err != nil {
+		panic(fmt.Errorf("fatal Open Permission Config File: %w", err))
+	}
+
+	fmt.Println(string(jsonFile))
+
+	// 解析JSON数据到结构体
+	config := make([]PermissionConfig, 0)
+	if err := json.Unmarshal(jsonFile, &config); err != nil {
+		panic(fmt.Errorf("fatal Unmarshal Permission Config File: %w", err))
+	}
+
+	PermConfigList = config
+
+	return
 }

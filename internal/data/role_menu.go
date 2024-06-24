@@ -13,9 +13,9 @@ func NewRoleMenuData() *RoleMenuData {
 type RoleMenuData struct {
 }
 
-func (s RoleMenuData) List() ([]*po.SysRoleMenu, error) {
+func (s RoleMenuData) ListByRoleId(roleId int64) ([]*po.SysRoleMenu, error) {
 	list := make([]*po.SysRoleMenu, 0)
-	err := conn.GetMerchantDB().Find(&list).Error
+	err := conn.GetMerchantDB().Where("role_id = ?", roleId).Find(&list).Error
 	if err != nil {
 		logrus.Errorf("RoleMenuData List Err: %s", err.Error())
 		return nil, err
@@ -25,7 +25,7 @@ func (s RoleMenuData) List() ([]*po.SysRoleMenu, error) {
 
 func (s RoleMenuData) Info(id int64) (*po.SysRoleMenu, error) {
 	info := &po.SysRoleMenu{}
-	err := conn.GetMerchantDB().Find(info, "id = ?", id).Error
+	err := conn.GetMerchantDB().First(info, "id = ?", id).Error
 	if err != nil {
 		logrus.Errorf("RoleMenuData Info Err: %s", err.Error())
 		return nil, err
@@ -34,7 +34,8 @@ func (s RoleMenuData) Info(id int64) (*po.SysRoleMenu, error) {
 }
 
 func (s RoleMenuData) Add(rm *po.SysRoleMenu) error {
-	err := conn.GetMerchantDB().Model(&po.SysRoleMenu{}).Where("id = ?", &rm.Id).Create(&rm).Error
+	rm.Id = 0
+	err := conn.GetMerchantDB().Model(&po.SysRoleMenu{}).Create(rm).Error
 	if err != nil {
 		logrus.Errorf("RoleMenuData Add Err: %s", err.Error())
 		return err
@@ -43,7 +44,7 @@ func (s RoleMenuData) Add(rm *po.SysRoleMenu) error {
 }
 
 func (s RoleMenuData) Edit(rm *po.SysRoleMenu) error {
-	err := conn.GetMerchantDB().Model(&po.User{}).Where("id = ?", &rm.Id).Updates(rm).Error
+	err := conn.GetMerchantDB().Model(&po.SysRoleMenu{}).Where("id = ?", rm.Id).Updates(rm).Error
 	if err != nil {
 		logrus.Errorf("RoleMenuData Edit Err: %s", err.Error())
 		return err
@@ -51,8 +52,17 @@ func (s RoleMenuData) Edit(rm *po.SysRoleMenu) error {
 	return nil
 }
 
-func (s RoleMenuData) Delete(rm *po.SysRoleMenu) error {
-	err := conn.GetMerchantDB().Where("id = ?", &rm.Id).Delete(&rm).Error
+func (s RoleMenuData) DeleteByRoleId(rm *po.SysRoleMenu) error {
+	err := conn.GetMerchantDB().Where("role_id = ?", rm.RoleId).Delete(rm).Error
+	if err != nil {
+		logrus.Errorf("RoleMenuData Delete Err: %s", err.Error())
+		return err
+	}
+	return nil
+}
+
+func (s RoleMenuData) DeleteByRoleAndMenuId(rm *po.SysRoleMenu) error {
+	err := conn.GetMerchantDB().Where("role_id = ? AND MenuId = ?", rm.RoleId, rm.MenuId).Delete(rm).Error
 	if err != nil {
 		logrus.Errorf("RoleMenuData Delete Err: %s", err.Error())
 		return err
