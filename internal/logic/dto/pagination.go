@@ -1,20 +1,25 @@
 package dto
 
 type Pagination struct {
-	PageIndex int `json:"page_index"`
-	PageSize  int `json:"page_size"`
+	PageIndex int `json:"page_index" form:"page_index" `
+	PageSize  int `json:"page_size" form:"page_size" `
+	TotalNum  int `json:"total_num" form:"total_num" `
 }
 
-func (m *Pagination) GetPageIndex() int {
-	if m.PageIndex <= 0 {
-		m.PageIndex = 1
+func (s *Pagination) GetPageIndex() int {
+	if s.PageIndex <= 0 {
+		s.PageIndex = 1
 	}
-	return m.PageIndex
+	return s.PageIndex
 }
 
-func (m *Pagination) GetPageSize() int {
-	if m.PageSize <= 0 {
-		m.PageSize = 10
+func (s *Pagination) GetPageSize() int {
+	if s.PageSize <= 0 {
+		s.PageSize = 10
 	}
-	return m.PageSize
+	return s.PageSize
+}
+
+func (s *Pagination) GetOffset() int {
+	return (s.GetPageIndex() - 1) * s.GetPageSize()
 }

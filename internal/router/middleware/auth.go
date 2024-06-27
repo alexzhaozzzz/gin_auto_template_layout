@@ -93,7 +93,9 @@ func JWTAuth() gin.HandlerFunc {
 				MerchantId: uint64(jwtExtMerchantId),
 			}
 
-			//由于中间件执行逻辑，开始处理权限相关逻辑 TODO: 开发完成后打开此处逻辑
+			//TODO: 通过用户表的最近更新时间去判断是否需要更新权限，登出时间判断
+			//TODO: 开发完成后打开此处逻辑
+			//由于中间件执行逻辑，开始处理权限相关逻辑
 			//perm := checkPermissions(c, strconv.FormatInt(int64(jwtExtRoleId), 10))
 			//if !perm {
 			//	ginx.NewContext(c).Render(statusx.StatusPermissionsError, "nil", http.StatusBadRequest)

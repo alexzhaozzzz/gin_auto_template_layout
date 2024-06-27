@@ -1,8 +1,11 @@
 package logic
 
 import (
+    "strconv"
+
 	"github.com/jinzhu/copier"
 	"github.com/sirupsen/logrus"
+
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/dto"
@@ -26,29 +29,63 @@ func (s {{.FunName}}) GetList(c *ginx.Context) {
 		return
 	}
 
-	data := map[string]interface{}{"list": list}
-	c.RenderSuccess(data)
+	resp := map[string]interface{}{"list": list}
+	c.RenderSuccess(resp)
 	return
 }
 
-func (s {{.FunName}}) GetInfo(c *ginx.Context) {
-	req := &dto.{{.DbStructName}}{}
-	if err := c.ShouldBindJSON(req); err != nil {
-		logrus.Errorf("{{.FunName}} GetInfo ShouldBindJSON Err: %s", err.Error())
+func (s {{.FunName}}) GetListByPage(c *ginx.Context) {
+	req := &dto.Pagination{}
+	if err := c.ShouldBindQuery(req); err != nil {
+		logrus.Errorf("{{.FunName}} GetListByPage ShouldBindQuery Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
 	d := data.New{{.FunName}}Data()
-	info, err := d.Info(req.Id)
+	list, err := d.ListByPage(req)
+	if err != nil {
+		logrus.Errorf("{{.FunName}} GetListByPage Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+
+	total, err := d.ListCount()
+	if err != nil {
+		logrus.Errorf("{{.FunName}} GetListByPage ListCount Err: %s", err.Error())
+		c.Render(statusx.StatusInternalServerError, nil)
+		return
+	}
+	req.TotalNum = int(total)
+
+	resp := map[string]interface{}{"list": list, "page": req}
+	c.RenderSuccess(resp)
+	return
+}
+
+func (s {{.FunName}}) GetInfo(c *ginx.Context) {
+	id := c.Param("id")
+	if id == "" {
+		logrus.Errorf("{{.FunName}} GetInfo Param Err: Id Is Empty")
+		c.Render(statusx.StatusInvalidRequest, nil)
+	}
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		logrus.Errorf("{{.FunName}} GetInfo Param Atoi Err: %s", err)
+		c.Render(statusx.StatusInvalidRequest, nil)
+		return
+	}
+
+	d := data.New{{.FunName}}Data()
+	info, err := d.Info(int64(idInt))
 	if err != nil {
 		logrus.Errorf("{{.FunName}} GetInfo Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
 
-	data := map[string]interface{}{"info": info}
-	c.RenderSuccess(data)
+	resp := map[string]interface{}{"info": info}
+	c.RenderSuccess(resp)
 	return
 }
 
@@ -116,16 +153,11 @@ func (s {{.FunName}}) Delete(c *ginx.Context) {
 		return
 	}
 
-	dReq := po.{{.DbStructName}}{}
-	err := copier.Copy(&dReq, &req)
-	if err != nil {
-		logrus.Errorf("{{.FunName}} Delete copier Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
+	dReq := po.{{.DbStructName}}{
+		Id: req.Id,
 	}
-
 	d := data.New{{.FunName}}Data()
-	err = d.Delete(&dReq)
+	err := d.Delete(&dReq)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} Delete Db Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)

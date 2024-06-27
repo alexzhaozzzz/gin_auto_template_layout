@@ -32,6 +32,33 @@ data:
     max_idle: 20
     max_open: 20
     max_life_time: 300
+  mysql-log:
+    host: 54.255.223.36
+    port: 53306
+    user: back
+    password: Back_789456123
+    database: log
+    max_idle: 20
+    max_open: 20
+    max_life_time: 300
+  mysql-admin:
+    host: 54.255.223.36
+    port: 53306
+    user: back
+    password: Back_789456123
+    database: admin
+    max_idle: 20
+    max_open: 20
+    max_life_time: 300
+  mysql-player:
+    host: 54.255.223.36
+    port: 53306
+    user: back
+    password: Back_789456123
+    database: player
+    max_idle: 20
+    max_open: 20
+    max_life_time: 300
   redis-merchant:
     addr: 192.168.152.129:6379
     password:

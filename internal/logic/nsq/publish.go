@@ -2,10 +2,11 @@ package nsq
 
 import (
 	"github.com/sirupsen/logrus"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 )
 
 func PublishMsg(topic string, msg []byte) error {
-	client, err := data.GetNSQCli()
+	client, err := conn.GetNSQCli()
 	if err != nil {
 		logrus.Errorf("PublishMsg GetNSQCli Err: %s", err)
 		return err

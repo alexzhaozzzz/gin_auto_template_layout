@@ -47,6 +47,7 @@
 * Redis
 * NSQ
 * ClickHouse
+* ./stop.sh 支持优雅关闭http服务
 * 参数校验: [validator] 直接在参数中配置TAG binding:"required"
 
 
@@ -65,7 +66,7 @@
 > 
 > 注 : make执行需要的执行程序详见scripts/exec目录
 
-* 通过传参导出.sql文件: `make sql2file TABLES=user TABLES=sys_roles`     //TABLES需要传入数据库对应表明，数据库地址及密码在根目录makefile文件中修改 **WARNING : 重复生成会覆盖**
+* 通过传参导出.sql文件: `make sql2file DATABASE=log TABLES=user TABLES=sys_roles`     //TABLES需要传入数据库对应表明，数据库地址及密码在根目录makefile文件中修改 **WARNING : 重复生成会覆盖**
 * 生成po目录文件: `make sql2po TABLES=user TABLES=sys_roles`
 * 生成dto目录文件: `make sql2dto TABLES=user TABLES=sys_roles`
 * 生成增删改查文件: 具体查看logic/template逻辑,请求接口传入对应参数
@@ -79,3 +80,4 @@
 
 * 编译文件: `make build`
 * 打包文件: `make package`
+* 启动服务: 拷贝bin目录至任何位置，或直接进入bin目录。测试环境执行 `./start.sh config.test.yml`

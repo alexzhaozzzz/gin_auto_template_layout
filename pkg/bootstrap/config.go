@@ -17,10 +17,10 @@ type PermissionConfig struct {
 }
 
 // LoadConfig ...
-func LoadConfig(flagPath *string) error {
+func LoadConfig(flagPath string) error {
 	// 根据Flag的值设置Viper的配置文件路径
-	if *flagPath != "" {
-		viper.SetConfigFile(*flagPath)
+	if flagPath != "" {
+		viper.SetConfigFile("./configs/" + flagPath)
 	} else {
 		// 如果没有提供Flag，则使用默认的配置文件路径
 		viper.SetConfigName("config")    // name of config file (without extension)
@@ -44,8 +44,6 @@ func LoadPermConfigFromJson() {
 	if err != nil {
 		panic(fmt.Errorf("fatal Open Permission Config File: %w", err))
 	}
-
-	fmt.Println(string(jsonFile))
 
 	// 解析JSON数据到结构体
 	config := make([]PermissionConfig, 0)
