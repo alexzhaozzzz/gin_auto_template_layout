@@ -4,16 +4,19 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
+
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/server"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/bootstrap"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/colorx"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/util"
 )
 
 func Run() {
@@ -50,25 +53,32 @@ func Run() {
 		if err = srv.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
 			panic(fmt.Sprintf("listen: %s\n", err))
 		}
+
 	}()
 
-	fmt.Println("Server is running...")
+	local := util.GetLocalIP()
+	fmt.Println(colorx.Green("\r\nServer run at:"))
+	fmt.Printf("-  Local:   %s://localhost:%d/ \r\n", "http", httpPort)
+	fmt.Printf("-  Network: %s://%s:%d/ \r\n", "http", local, httpPort)
+	fmt.Println(colorx.Green("Swagger run at:"))
+	fmt.Printf("-  Local:   http://localhost:%d/swagger/index.html \r\n", httpPort)
+	fmt.Printf("-  Network: %s://%s:%d/swagger/index.html \r\n", "http", local, httpPort)
+	fmt.Printf("\r\n %s Enter Control + C Shutdown Server \r\n", time.Now().Format(time.DateTime))
 
 	<-quit // 阻塞主goroutine，等待信号
 
-	sTime := time.Now().Format(time.DateTime)
-	fmt.Println("Shutting down server:", sTime)
+	fmt.Printf("%s Shutdown Server ... \r\n", time.Now().Format(time.DateTime))
 
 	// 给予5秒时间完成已有请求
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 
 	if err = srv.Shutdown(ctx); err != nil {
-		fmt.Println("Server forced to shutdown:", err)
+		fmt.Printf("%s Server Forced To Shutdown ... \r\n", time.Now().Format(time.DateTime))
+		return
 	}
 
-	eTime := time.Now().Format(time.DateTime)
-	fmt.Println("Server exited:", eTime)
+	fmt.Printf("%s Server Exited ... \r\n", time.Now().Format(time.DateTime))
 
 	return
 }

@@ -78,3 +78,7 @@ nsq:
   addr: 127.0.0.1:4150
   lookUpdAddr:
     - 127.0.0.1:4161
+
+
+url:
+  third_order_check: http://127.0.0.1:9600

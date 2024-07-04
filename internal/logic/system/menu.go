@@ -27,7 +27,7 @@ func (s Menu) GetList(c *ginx.Context) {
 		return
 	}
 
-	reqList := make([]*dto.SysMenu, 0)
+	reqList := make([]*dto.SysMenuReq, 0)
 	if len(list) > 0 {
 		for _, v := range list {
 			pIds := make([]int64, 0)
@@ -35,7 +35,7 @@ func (s Menu) GetList(c *ginx.Context) {
 				_ = json.Unmarshal([]byte(v.PermissionsIds), &pIds)
 			}
 
-			reqList = append(reqList, &dto.SysMenu{
+			reqList = append(reqList, &dto.SysMenuReq{
 				Id:             v.Id,
 				Title:          v.Title,
 				Icon:           v.Icon,
@@ -78,7 +78,7 @@ func (s Menu) GetInfo(c *ginx.Context) {
 	if info.PermissionsIds != "" {
 		_ = json.Unmarshal([]byte(info.PermissionsIds), &pIds)
 	}
-	reqInfo := dto.SysMenu{
+	reqInfo := dto.SysMenuReq{
 		Id:             info.Id,
 		Title:          info.Title,
 		Icon:           info.Icon,
@@ -95,7 +95,7 @@ func (s Menu) GetInfo(c *ginx.Context) {
 }
 
 func (s Menu) Add(c *ginx.Context) {
-	req := &dto.SysMenu{}
+	req := &dto.SysMenuReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Menu Add ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -132,7 +132,7 @@ func (s Menu) Add(c *ginx.Context) {
 }
 
 func (s Menu) Edit(c *ginx.Context) {
-	req := &dto.SysMenu{}
+	req := &dto.SysMenuReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Menu Edit ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -169,7 +169,7 @@ func (s Menu) Edit(c *ginx.Context) {
 }
 
 func (s Menu) Delete(c *ginx.Context) {
-	req := &dto.SysMenu{}
+	req := &dto.SysMenuReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Menu Delete ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)

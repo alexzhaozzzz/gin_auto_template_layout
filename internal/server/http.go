@@ -12,6 +12,7 @@ func InitServer() *gin.Engine {
 		panic("load gin error")
 	}
 
+	//TODO:增加环境判断
 	gin.SetMode(gin.DebugMode)
 
 	// 自定义错误处理

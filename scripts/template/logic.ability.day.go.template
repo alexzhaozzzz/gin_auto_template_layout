@@ -47,7 +47,7 @@ func (s {{.FunName}}) GetListByPage(c *ginx.Context) {
 		req.Day = fmt.Sprintf("%d%d%d", now.YearDay(), now.Month(), now.Day())
 	}
 
-	d := {{.Dir}}.New{{.FunName}}Data()
+	d := {{.Dir}}.New{{.DbStructName}}Data()
 	list, err := d.ListByPage(req.Day, cIds, req)
 	if err != nil {
 		logrus.Errorf("{{.FunName}} GetListByPage Err: %s", err.Error())

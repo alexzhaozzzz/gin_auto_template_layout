@@ -1,7 +1,6 @@
 package system
 
 import (
-	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"os"
 	"text/template"
 
@@ -23,9 +22,11 @@ type TemplateReq struct {
 	DbStructName string `json:"db_struct_name"`
 	ParamName    string `json:"param_name"`
 	FileName     string `json:"file_name"`
+	PoFileName   string `json:"po_file_name"`
 	Dir          string `json:"dir"`
 	ChannelKey   string `json:"channel_key"`
 	IsDay        int    `json:"is_day"`
+	OnlyPo       int    `json:"only_po"`
 }
 
 func (s Template) Add(c *ginx.Context) {
@@ -37,7 +38,7 @@ func (s Template) Add(c *ginx.Context) {
 	}
 
 	tDataPath := "./scripts/template/data.go.template"
-	tDataOutPath := "./internal/data/" + req.FileName + ".go"
+	tDataOutPath := "./internal/data/" + req.Dir + "/" + req.PoFileName + ".go"
 	td, err := template.ParseFiles(tDataPath)
 	if err != nil {
 		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
@@ -49,6 +50,7 @@ func (s Template) Add(c *ginx.Context) {
 		"FunName":      req.FunName,
 		"DbStructName": req.DbStructName,
 		"ParamName":    req.ParamName,
+		"Dir":          req.Dir,
 	}
 
 	// 打开一个文件用于写入
@@ -68,30 +70,32 @@ func (s Template) Add(c *ginx.Context) {
 		return
 	}
 
-	tLogicPath := "./scripts/template/logic.go.template"
-	tLogicOutPath := "./internal/logic/" + req.FileName + ".go"
-	tl, err := template.ParseFiles(tLogicPath)
-	if err != nil {
-		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
-	}
+	if req.OnlyPo <= 0 {
+		tLogicPath := "./scripts/template/logic.go.template"
+		tLogicOutPath := "./internal/logic/" + req.Dir + "/" + req.FileName + ".go"
+		tl, err := template.ParseFiles(tLogicPath)
+		if err != nil {
+			logrus.Errorf("template.ParseFiles Err: %s", err.Error())
+			c.Render(statusx.StatusInvalidRequest, nil)
+			return
+		}
 
-	// 打开一个文件用于写入
-	tlFile, err := os.Create(tLogicOutPath)
-	if err != nil {
-		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
-	}
-	defer tlFile.Close()
+		// 打开一个文件用于写入
+		tlFile, err := os.Create(tLogicOutPath)
+		if err != nil {
+			logrus.Errorf("template.ParseFiles Err: %s", err.Error())
+			c.Render(statusx.StatusInvalidRequest, nil)
+			return
+		}
+		defer tlFile.Close()
 
-	// 使用模板渲染数据，并将结果写入文件
-	err = tl.Execute(tlFile, data)
-	if err != nil {
-		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
+		// 使用模板渲染数据，并将结果写入文件
+		err = tl.Execute(tlFile, data)
+		if err != nil {
+			logrus.Errorf("template.ParseFiles Err: %s", err.Error())
+			c.Render(statusx.StatusInvalidRequest, nil)
+			return
+		}
 	}
 
 	c.RenderSuccess(nil)
@@ -107,9 +111,9 @@ func (s Template) AbilityAdd(c *ginx.Context) {
 	}
 
 	tDataPath := "./scripts/template/data.ability.go.template"
-	tDataOutPath := "./internal/data/" + req.Dir + "/" + req.FileName + ".go"
+	tDataOutPath := "./internal/data/" + req.Dir + "/" + req.PoFileName + ".go"
 	if req.IsDay > 0 {
-		tDataPath = "./scripts/template/data.ability.day.go"
+		tDataPath = "./scripts/template/data.ability.day.go.template"
 	}
 
 	td, err := template.ParseFiles(tDataPath)
@@ -124,7 +128,6 @@ func (s Template) AbilityAdd(c *ginx.Context) {
 		"DbStructName": req.DbStructName,
 		"ParamName":    req.ParamName,
 		"Dir":          req.Dir,
-		"FileName":     req.FileName,
 		"ChannelKey":   req.ChannelKey,
 	}
 
@@ -145,65 +148,36 @@ func (s Template) AbilityAdd(c *ginx.Context) {
 		return
 	}
 
-	tLogicPath := "./scripts/template/logic.ability.go.template"
-	tLogicOutPath := "./internal/logic/" + req.Dir + "/" + req.FileName + ".go"
-	if req.IsDay > 0 {
-		tDataPath = "./scripts/template/logic.ability.day.go.template"
-	}
+	if req.OnlyPo <= 0 {
+		tLogicPath := "./scripts/template/logic.ability.go.template"
+		tLogicOutPath := "./internal/logic/" + req.Dir + "/" + req.FileName + ".go"
+		if req.IsDay > 0 {
+			tLogicPath = "./scripts/template/logic.ability.day.go.template"
+		}
 
-	tl, err := template.ParseFiles(tLogicPath)
-	if err != nil {
-		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
-	}
+		tl, err := template.ParseFiles(tLogicPath)
+		if err != nil {
+			logrus.Errorf("template.ParseFiles Err: %s", err.Error())
+			c.Render(statusx.StatusInvalidRequest, nil)
+			return
+		}
 
-	// 打开一个文件用于写入
-	tlFile, err := os.Create(tLogicOutPath)
-	if err != nil {
-		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
-	}
-	defer tlFile.Close()
+		// 打开一个文件用于写入
+		tlFile, err := os.Create(tLogicOutPath)
+		if err != nil {
+			logrus.Errorf("template.ParseFiles Err: %s", err.Error())
+			c.Render(statusx.StatusInvalidRequest, nil)
+			return
+		}
+		defer tlFile.Close()
 
-	// 使用模板渲染数据，并将结果写入文件
-	err = tl.Execute(tlFile, data)
-	if err != nil {
-		logrus.Errorf("template.ParseFiles Err: %s", err.Error())
-		c.Render(statusx.StatusInvalidRequest, nil)
-		return
-	}
-
-	c.RenderSuccess(nil)
-	return
-}
-
-func (s Template) Test(c *ginx.Context) {
-	logrus.WithFields(logrus.Fields{
-		"SpendTime": 1,
-		"IP":        2,
-	}).Info("--------------------test---------------------")
-
-	logrus.Info("--------------------test---------------------")
-
-	c2 := conn.GetMerchantRDb()
-	if c2 == nil {
-		logrus.Info("redis is nil")
-	}
-
-	c1 := conn.GetClickhouseDB()
-	if c1 == nil {
-		logrus.Info("cliclhouse is nil")
-	}
-
-	c3, err := conn.GetNSQCli()
-	if err != nil {
-
-		logrus.Info("nsq is err", err)
-	}
-	if c3 == nil {
-		logrus.Info("nsq is nil")
+		// 使用模板渲染数据，并将结果写入文件
+		err = tl.Execute(tlFile, data)
+		if err != nil {
+			logrus.Errorf("template.ParseFiles Err: %s", err.Error())
+			c.Render(statusx.StatusInvalidRequest, nil)
+			return
+		}
 	}
 
 	c.RenderSuccess(nil)

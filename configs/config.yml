@@ -78,3 +78,6 @@ nsq:
   addr: 192.168.1.22:4150
   lookUpdAddr:
     - 192.168.1.22:4161
+
+url:
+  third_order_check: http://192.168.1.22:9600

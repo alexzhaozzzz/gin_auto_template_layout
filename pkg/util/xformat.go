@@ -5,6 +5,8 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
+	"math/rand"
+	"time"
 )
 
 // MD5WithSalt ...
@@ -44,4 +46,16 @@ func Sha256WithSalt(data, salt string) []byte {
 // Sha256 ...
 func Sha256(data string) []byte {
 	return Sha256WithSalt(data, "")
+}
+
+// RandomString 生成一个指定长度的随机字符串
+func RandomString(length int) string {
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = letterBytes[r.Intn(len(letterBytes))]
+	}
+	return string(b)
 }

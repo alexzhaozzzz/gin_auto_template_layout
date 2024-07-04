@@ -11,6 +11,15 @@ type Result struct {
 	Data interface{}    `json:"data"`
 }
 
+type ListResponses struct {
+	List interface{} `json:"list"`
+	Page interface{} `json:"page,omitempty"`
+}
+
+type InfoResponses struct {
+	Info interface{} `json:"info"`
+}
+
 // Render gin Success
 func (c *Context) RenderSuccess(data interface{}) {
 	c.Header("Cache-Control", "no-cache")

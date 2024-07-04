@@ -1,10 +1,12 @@
 package system
 
 import (
+	"errors"
 	"github.com/sirupsen/logrus"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/dto"
+	"gorm.io/gorm"
 )
 
 func NewUserData() *UserData {
@@ -17,7 +19,7 @@ type UserData struct {
 func (s UserData) List() ([]*po.User, error) {
 	list := make([]*po.User, 0)
 	err := conn.GetMerchantDB().Find(&list).Error
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		logrus.Errorf("UserData List Err: %s", err.Error())
 		return nil, err
 	}
@@ -27,7 +29,7 @@ func (s UserData) List() ([]*po.User, error) {
 func (s UserData) ListByPage(page *dto.Pagination) ([]*po.User, error) {
 	list := make([]*po.User, 0)
 	err := conn.GetMerchantDB().Offset(page.GetOffset()).Limit(page.GetPageSize()).Find(&list).Error
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		logrus.Errorf("UserData List Err: %s", err.Error())
 		return nil, err
 	}
@@ -37,8 +39,8 @@ func (s UserData) ListByPage(page *dto.Pagination) ([]*po.User, error) {
 func (s UserData) ListCount() (int64, error) {
 	num := int64(0)
 	err := conn.GetMerchantDB().Model(&po.User{}).Count(&num).Error
-	if err != nil {
-		logrus.Errorf("UserData List Err: %s", err.Error())
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		logrus.Errorf("UserData ListCount Err: %s", err.Error())
 		return num, err
 	}
 	return num, nil

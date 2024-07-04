@@ -20,6 +20,7 @@ const (
 	StatusTemporarilyUnavailable
 	StatusInternalServerError
 	StatusExternalServerError
+	StatusPasswordError
 )
 
 // StatusMap ...
@@ -36,4 +37,5 @@ var StatusMap = map[Status]string{
 	StatusTemporarilyUnavailable: "服务暂时无法访问",
 	StatusInternalServerError:    "服务内部异常",
 	StatusExternalServerError:    "外部服务异常",
+	StatusPasswordError:          "密码错误",
 }

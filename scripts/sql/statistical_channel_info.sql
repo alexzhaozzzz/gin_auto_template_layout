@@ -1,0 +1,23 @@
+CREATE TABLE `statistical_channel_info` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `channel_id` int NOT NULL DEFAULT '0' COMMENT '渠道',
+  `date` int NOT NULL DEFAULT '0' COMMENT '日期',
+  `new_dev` bigint NOT NULL DEFAULT '0' COMMENT '新增设备',
+  `reg` bigint NOT NULL DEFAULT '0' COMMENT '新增注册',
+  `reg_bind` bigint NOT NULL DEFAULT '0' COMMENT '新增绑定',
+  `total_bind` bigint NOT NULL DEFAULT '0' COMMENT '总绑定',
+  `reg_recharge` bigint NOT NULL DEFAULT '0' COMMENT '新充用户',
+  `reg_recharge_times` bigint NOT NULL DEFAULT '0' COMMENT '新充次数',
+  `reg_recharge_amount` bigint NOT NULL DEFAULT '0' COMMENT '新充金额',
+  `reg_withdraw_amount` bigint NOT NULL DEFAULT '0' COMMENT '新提金额',
+  `first_recharge` bigint NOT NULL DEFAULT '0' COMMENT '首充用户',
+  `total_recharge` bigint NOT NULL DEFAULT '0' COMMENT '总充用户',
+  `total_recharge_times` bigint NOT NULL DEFAULT '0' COMMENT '总充次数',
+  `total_recharge_amount` bigint NOT NULL DEFAULT '0' COMMENT '总充值金额',
+  `total_withdraw_amount` bigint NOT NULL DEFAULT '0' COMMENT '总提现金额',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `reg_recharge_bind` int NOT NULL DEFAULT '0' COMMENT '新绑充用户',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `un_idx` (`channel_id`,`date`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=493 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='综合简报';

@@ -4,6 +4,13 @@
 * ***请使用linux环境***
 * 安装mysqldump
 * 将./scripts/exec/sql2struct 执行文件拷贝至环境变量目录下
+* 安装swag: 
+  ```
+  go get -u github.com/swaggo/swag/cmd/swag
+  // 引入依赖
+  go get -u github.com/swaggo/gin-swagger
+  go get -u github.com/swaggo/files
+  ```
 
 ## 项目结构
 ```markdown
@@ -49,12 +56,13 @@
 * ClickHouse
 * ./stop.sh 支持优雅关闭http服务
 * 参数校验: [validator] 直接在参数中配置TAG binding:"required"
+* swag `swag init`可以生成swagger文档，http://localhost:8099/swagger/index.html#/ 访问接口文档
 
 
 > 中间件集成内容
 
 * Oauth2
-* 跨域
+* 跨域，与nginx配置的跨域冲突
 * Casbin鉴权
 
 ## Casbin鉴权相关介绍

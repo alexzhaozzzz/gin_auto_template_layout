@@ -19,22 +19,11 @@ func InitLog() {
 		TimestampFormat: "2006-01-02 15:04:05.000",
 	})
 
-	switch level {
-	case "trace":
-		logrus.SetLevel(logrus.TraceLevel)
-	case "debug":
-		logrus.SetLevel(logrus.DebugLevel)
-	case "info":
-		logrus.SetLevel(logrus.InfoLevel)
-	case "warn":
-		logrus.SetLevel(logrus.WarnLevel)
-	case "error":
-		logrus.SetLevel(logrus.ErrorLevel)
-	case "fatal":
-		logrus.SetLevel(logrus.FatalLevel)
-	case "panic":
-		logrus.SetLevel(logrus.PanicLevel)
+	lv, err := logrus.ParseLevel(level)
+	if err != nil {
+		panic("logrus parse level err")
 	}
+	logrus.SetLevel(lv)
 	logrus.SetReportCaller(true) // 打印文件、行号和主调函数。
 
 	now := time.Now()

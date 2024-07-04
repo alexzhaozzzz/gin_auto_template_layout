@@ -1,0 +1,307 @@
+definitions:
+  dto.Pagination:
+    properties:
+      page_index:
+        type: integer
+      page_size:
+        type: integer
+      total_num:
+        type: integer
+    type: object
+  dto.PayoutsReq:
+    properties:
+      loan_end_time:
+        type: integer
+      loan_start_time:
+        type: integer
+      order_end_time:
+        type: integer
+      order_id:
+        type: string
+      order_start_time:
+        type: integer
+      page_index:
+        type: integer
+      page_size:
+        type: integer
+      player_id:
+        description: 玩家id
+        type: integer
+      state:
+        description: '订单状态: 0=审核中, 1=审核成功,2=提现成功,-1=审核失败,-2=提现失败,-3=提现提交失败'
+        type: integer
+      total_num:
+        type: integer
+    type: object
+  ginx.ListResponses:
+    properties:
+      list: {}
+      page: {}
+    type: object
+  ginx.Result:
+    properties:
+      code:
+        $ref: '#/definitions/statusx.Status'
+      data: {}
+      message:
+        type: string
+    type: object
+  po.BetStatistics:
+    properties:
+      bet:
+        description: 当日总下注
+        type: integer
+      channel_id:
+        description: 渠道id
+        type: integer
+      chip:
+        description: 当日打码量
+        type: integer
+      day:
+        description: 日期(当日时间戳)
+        type: integer
+      fee:
+        description: 当日总抽水
+        type: integer
+      game_id:
+        description: 游戏id
+        type: integer
+      player_id:
+        description: 玩家id
+        type: integer
+      reward:
+        description: 当日总返奖
+        type: integer
+      times:
+        description: 当日总次数
+        type: integer
+      win:
+        description: 当日总输赢
+        type: integer
+    type: object
+  po.StatisticalRankPay:
+    properties:
+      begintime:
+        description: 最后登录
+        type: string
+      channel_id:
+        description: 渠道id
+        type: integer
+      created_at:
+        description: 创建时间
+        type: string
+      currency_recharge:
+        description: 充值总额_当天
+        type: integer
+      currency_withdraw:
+        description: 总提现额_当天
+        type: integer
+      gold:
+        description: 真金+绑金
+        type: integer
+      id:
+        type: integer
+      n_last_theme:
+        description: spin主题（最后一笔充值前spin主题）
+        type: integer
+      n_src:
+        description: 充值来源（最后一笔充值
+        type: integer
+      pay:
+        description: 当天累计充值
+        type: integer
+      pay_number:
+        description: 充值笔数
+        type: integer
+      player_id:
+        description: 玩家id
+        type: integer
+      time_int:
+        description: 当天时间缀
+        type: integer
+      updated_at:
+        description: 更新时间
+        type: string
+      withdraw:
+        description: 当日累计提现
+        type: integer
+    type: object
+  statusx.Status:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    type: integer
+    x-enum-varnames:
+    - StatusOk
+    - StatusUnknownError
+    - StatusApiNotFount
+    - StatusUnauthorized
+    - StatusVerifyTokenError
+    - StatusPermissionsError
+    - StatusInvalidRequest
+    - StatusRequestTimeout
+    - StatusTooManyRequests
+    - StatusTemporarilyUnavailable
+    - StatusInternalServerError
+    - StatusExternalServerError
+    - StatusPasswordError
+info:
+  contact: {}
+paths:
+  /ability/userbet:
+    get:
+      parameters:
+      - description: 开始时间（时间戳）
+        in: query
+        name: start_time
+        type: integer
+      - description: 结束时间（时间戳）
+        in: query
+        name: end_time
+        type: integer
+      - description: 用户ID
+        in: query
+        name: player_id
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page_index
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/ginx.Result'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/ginx.ListResponses'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/po.BetStatistics'
+                        type: array
+                      page:
+                        $ref: '#/definitions/dto.Pagination'
+                    type: object
+              type: object
+        "400":
+          description: bad request
+          schema:
+            type: string
+      summary: 获取用户每日充提差
+      tags:
+      - todos
+  /ability/userfight:
+    get:
+      parameters:
+      - description: 开始时间（时间戳）
+        in: query
+        name: start_time
+        type: integer
+      - description: 结束时间（时间戳）
+        in: query
+        name: end_time
+        type: integer
+      - description: 用户ID
+        in: query
+        name: player_id
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page_index
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/ginx.Result'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/ginx.ListResponses'
+                  - properties:
+                      list:
+                        items:
+                          $ref: '#/definitions/po.StatisticalRankPay'
+                        type: array
+                      page:
+                        $ref: '#/definitions/dto.Pagination'
+                    type: object
+              type: object
+        "400":
+          description: bad request
+          schema:
+            type: string
+      summary: 获取用户每日输赢
+      tags:
+      - todos
+  /api/v1/tags:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 标签名称
+        in: query
+        maxLength: 100
+        name: name
+        type: string
+      - default: 1
+        description: 状态
+        enum:
+        - 0
+        - 1
+        in: query
+        name: state
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/ginx.Result'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.PayoutsReq'
+              type: object
+      summary: 获取多个标签
+      tags:
+      - todos
+swagger: "2.0"

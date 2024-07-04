@@ -3,42 +3,54 @@ package {{.Dir}}
 import (
 	"errors"
 	"fmt"
+
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/conn"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/po"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/dto"
-	"gorm.io/gorm"
 )
 
-func New{{.FunName}}Data() *{{.FunName}}Data {
-	return &{{.FunName}}Data{}
+func New{{.DbStructName}}Data() *{{.DbStructName}}Data {
+	return &{{.DbStructName}}Data{}
 }
 
-type {{.FunName}}Data struct {
+type {{.DbStructName}}Data struct {
 }
 
-func (s {{.FunName}}Data) GetTableName(day string) string {
+func (s {{.DbStructName}}Data) GetTableName(day string) string {
 	cr := po.{{.DbStructName}}{}
 	table := fmt.Sprintf("%s_%s", cr.TableName(), day)
 	return table
 }
 
-func (s {{.FunName}}Data) ListByPage(day string, cIds []int32, page *dto.{{.DbStructName}}) ([]*po.{{.DbStructName}}, error) {
+func (s {{.DbStructName}}Data) ListByPage(day string, cIds []int32, page *dto.{{.DbStructName}}) ([]*po.{{.DbStructName}}, error) {
 	list := make([]*po.{{.DbStructName}}, 0)
 	err := conn.GetLogDB().Table(s.GetTableName(day)).Where("channel_id IN ?", cIds).Offset(page.GetOffset()).Limit(page.GetPageSize()).Find(&list).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		logrus.Errorf("{{.FunName}}Data List Err: %s", err.Error())
+		logrus.Errorf("{{.DbStructName}}Data List Err: %s", err.Error())
 		return nil, err
 	}
 	return list, nil
 }
 
-func (s {{.FunName}}Data) ListCount(day string, cIds []int32) (int64, error) {
+func (s {{.DbStructName}}Data) ListCount(day string, cIds []int32) (int64, error) {
 	num := int64(0)
 	err := conn.GetLogDB().Table(s.GetTableName(day)).Model(&po.{{.DbStructName}}{}).Where("channel_id IN ?", cIds).Count(&num).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		logrus.Errorf("{{.FunName}}Data List Err: %s", err.Error())
+		logrus.Errorf("{{.DbStructName}}Data List Err: %s", err.Error())
 		return num, err
 	}
 	return num, nil
+}
+
+func (s {{.DbStructName}}Data) InfoById(id uint64) (*po.{{.DbStructName}}, error) {
+	info := &po.{{.DbStructName}}{}
+	err := conn.GetLogDB().First(info, "id = ?", id).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		logrus.Errorf("{{.DbStructName}}Data InfoById Err: %s", err.Error())
+		return nil, err
+	}
+	return info, nil
 }

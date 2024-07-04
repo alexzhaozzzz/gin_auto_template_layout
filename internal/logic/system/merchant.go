@@ -74,7 +74,7 @@ func (s Merchant) GetInfo(c *ginx.Context) {
 }
 
 func (s Merchant) Add(c *ginx.Context) {
-	req := &dto.MerchantList{}
+	req := &dto.MerchantListReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Merchant Add ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -102,7 +102,7 @@ func (s Merchant) Add(c *ginx.Context) {
 }
 
 func (s Merchant) Edit(c *ginx.Context) {
-	req := &dto.MerchantList{}
+	req := &dto.MerchantListReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Merchant Edit ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -130,7 +130,7 @@ func (s Merchant) Edit(c *ginx.Context) {
 }
 
 func (s Merchant) Delete(c *ginx.Context) {
-	req := &dto.MerchantList{}
+	req := &dto.MerchantListReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Merchant Delete ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)

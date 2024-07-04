@@ -88,7 +88,7 @@ func (s Role) GetInfo(c *ginx.Context) {
 }
 
 func (s Role) Add(c *ginx.Context) {
-	req := &dto.SysRolesChange{}
+	req := &dto.SysRolesChangeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Role Add ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -135,7 +135,7 @@ func (s Role) Add(c *ginx.Context) {
 }
 
 func (s Role) Edit(c *ginx.Context) {
-	req := &dto.SysRolesChange{}
+	req := &dto.SysRolesChangeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Role Edit ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
@@ -176,7 +176,7 @@ func (s Role) Edit(c *ginx.Context) {
 }
 
 func (s Role) Delete(c *ginx.Context) {
-	req := &dto.SysRoles{}
+	req := &dto.SysRolesReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
 		logrus.Errorf("Role Delete ShouldBindJSON Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)

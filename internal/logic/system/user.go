@@ -37,6 +37,12 @@ func (s User) Login(c *ginx.Context) {
 		return
 	}
 
+	if info.Password != util.MD5(req.Password) {
+		logrus.Errorf("User Login Password Err")
+		c.Render(statusx.StatusPasswordError, nil)
+		return
+	}
+
 	dru := system.NewRoleUsersData()
 	ruInfo, err := dru.InfoByUserId(info.Id)
 	if err != nil {
@@ -196,7 +202,7 @@ func (s User) Edit(c *ginx.Context) {
 	dReq := po.User{
 		Id:         req.User.Id,
 		Username:   req.User.Username,
-		Password:   req.User.Password,
+		Password:   util.MD5(req.User.Password),
 		MerchantId: req.User.MerchantId,
 		NickName:   req.User.NickName,
 		Phone:      req.User.Phone,

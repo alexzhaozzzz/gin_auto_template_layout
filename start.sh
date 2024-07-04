@@ -9,8 +9,6 @@ fi
 
 echo "================start shell==================="
 
-killall -9 merchant
-
 nohup ./merchant -c=${CONFIG_NAME} > Nohup.log &
 
 ps -ef | grep merchant | grep  -v grep
