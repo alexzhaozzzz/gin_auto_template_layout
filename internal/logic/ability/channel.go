@@ -18,6 +18,19 @@ func NewChannel() *Channel {
 type Channel struct {
 }
 
+// GetListByPage ...
+// @Summary 渠道分析
+// @Tags Statistics
+// @Produce  json
+// @Param start_time query int false "开始时间（时间戳）"
+// @Param end_time query int false "结束时间（时间戳）"
+// @Param new_reg query int false "新增注册人数"
+// @Param recharge query int false "累计充值"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]dto.StatisticalDailyResp,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /statistics/channel [get]
 func (s Channel) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -89,8 +102,6 @@ func (s Channel) GetListByPage(c *ginx.Context) {
 				FirstRecharge:        v.FirstRecharge,
 				FirstRechargeTotal:   v.FirstRechargeTotal,
 				ChannelId:            v.ChannelId,
-				CreatedAt:            v.CreatedAt,
-				UpdatedAt:            v.UpdatedAt,
 				RegBlackList:         v.RegBlackList,
 				ActiveAvgSpin:        v.ActiveAvgSpin,
 				ActiveAvgBet:         v.ActiveAvgBet,
@@ -148,7 +159,10 @@ func (s Channel) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": respList, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: respList,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

@@ -18,6 +18,18 @@ func NewRetain() *Retain {
 type Retain struct {
 }
 
+// GetListByPage ...
+// @Summary 留存
+// @Tags Statistics
+// @Produce  json
+// @Param start_time query int false "开始时间（时间戳）"
+// @Param end_time query int false "结束时间（时间戳）"
+// @Param r_type query int false "类型: 1登录,2注册,3充值,4提现"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.Retain,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /statistics/retain [get]
 func (s Retain) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -60,7 +72,10 @@ func (s Retain) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": list, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

@@ -18,6 +18,17 @@ func NewManufacturers() *Manufacturers {
 type Manufacturers struct {
 }
 
+// GetListByPage ...
+// @Summary 厂商统计
+// @Tags Statistics
+// @Produce  json
+// @Param start_time query int false "开始时间（时间戳）"
+// @Param end_time query int false "结束时间（时间戳）"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]dto.ManufacturersResp,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /statistics/manufacturers [get]
 func (s Manufacturers) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -84,7 +95,10 @@ func (s Manufacturers) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": respList, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: respList,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

@@ -4,13 +4,729 @@
         "contact": {}
     },
     "paths": {
+        "/ability/checkorderstatus": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "获取订单第三方状态",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "订单id",
+                        "name": "order_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.InfoResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "info": {
+                                                            "$ref": "#/definitions/dto.ToThirdOrderCheckResp"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/gamelog": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "用户游戏日志",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "日期（例:20240501）",
+                        "name": "day",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "游戏id",
+                        "name": "game_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "下注",
+                        "name": "bet",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "返奖",
+                        "name": "reward",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "赢取",
+                        "name": "win",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "日志分类 0=下注返奖日志 1=下注日志 2=返奖日志",
+                        "name": "log_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.GameLog"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/goldchange": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "每日金币变化",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "日期（例:20240501）",
+                        "name": "day",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "流水id",
+                        "name": "trade_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.CurrencyRecord"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/loginlog": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "用户登录日志",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.LoginLogResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/payouts": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "提现日志",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "订单id",
+                        "name": "order_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "订单状态: 0=审核中, 1=审核成功,2=提现成功,-1=审核失败,-2=提现失败,-3=提现提交失败",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "订单开始时间（时间戳）",
+                        "name": "order_start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "订单结束时间（时间戳）",
+                        "name": "order_end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "放款开始时间（时间戳）",
+                        "name": "loan_start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "放款结束时间（时间戳）",
+                        "name": "loan_end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.WithdrawRecord"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/payoutsaudit": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "提现审核",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "订单id",
+                        "name": "order_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "金额开始值",
+                        "name": "amount_start",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "金额结束值",
+                        "name": "amount_end",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.PayoutsAuditResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/rechargelog": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "充值日志",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "订单id",
+                        "name": "order_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "充值结束开始时间（时间戳）",
+                        "name": "finish_start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "充值结束结束时间（时间戳）",
+                        "name": "finish_end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "金额",
+                        "name": "amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "订单状态: 0=未付款, 1=已付款,2=已发货，3=补发成功， -1=充值失败，-2=发货失败",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "充值平台",
+                        "name": "platform",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.RechargeLogResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ability/userbaseinfo": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ability"
+                ],
+                "summary": "用户基本信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.InfoResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "info": {
+                                                            "$ref": "#/definitions/dto.UserBaseResp"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/ability/userbet": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "todos"
+                    "Ability"
                 ],
                 "summary": "获取用户每日充提差",
                 "parameters": [
@@ -98,7 +814,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "todos"
+                    "Ability"
                 ],
                 "summary": "获取用户每日输赢",
                 "parameters": [
@@ -180,41 +896,38 @@
                 }
             }
         },
-        "/api/v1/tags": {
+        "/ability/userrechargelog": {
             "get": {
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "todos"
+                    "Ability"
                 ],
-                "summary": "获取多个标签",
+                "summary": "用户充值提现",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "type": "string",
-                        "description": "标签名称",
-                        "name": "name",
+                        "type": "integer",
+                        "description": "玩家id",
+                        "name": "player_id",
                         "in": "query"
                     },
                     {
-                        "enum": [
-                            0,
-                            1
-                        ],
                         "type": "integer",
-                        "default": 1,
-                        "description": "状态",
-                        "name": "state",
+                        "description": "订单开始时间（时间戳）",
+                        "name": "order_start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "订单结束时间（时间戳）",
+                        "name": "order_end_time",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "页码",
-                        "name": "page",
+                        "name": "page_index",
                         "in": "query"
                     },
                     {
@@ -236,11 +949,1687 @@
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.PayoutsReq"
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.WithdrawRecord"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
                                         }
                                     }
                                 }
                             ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取菜单列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.SysMenuReq"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/add": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "上传文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "账号删除",
+                "parameters": [
+                    {
+                        "description": "账号信息（只需要传ID值）",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/edit": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "菜单编辑",
+                "parameters": [
+                    {
+                        "description": "菜单信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SysMenuReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/menu/info/:id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取菜单详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "菜单id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.InfoResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "info": {
+                                                            "$ref": "#/definitions/dto.SysMenuReq"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchant": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取商户列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.MerchantList"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchant/add": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "商户新增",
+                "parameters": [
+                    {
+                        "description": "商户信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.MerchantListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchant/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "商户删除",
+                "parameters": [
+                    {
+                        "description": "商户信息（只需要传ID值）",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.MerchantListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchant/edit": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "商户编辑",
+                "parameters": [
+                    {
+                        "description": "商户信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.MerchantListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/merchant/info/:id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取商户详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "商户id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.InfoResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "info": {
+                                                            "$ref": "#/definitions/po.MerchantList"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/permission": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取权限列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/bootstrap.PermissionConfig"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取分页角色列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.SysRoles"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "page": {
+                                            "$ref": "#/definitions/dto.Pagination"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/add": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "角色新增",
+                "parameters": [
+                    {
+                        "description": "角色信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SysRolesChangeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取全部角色列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.SysRoles"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/delete": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "角色删除",
+                "parameters": [
+                    {
+                        "description": "角色信息（只需要传ID值）",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SysRolesReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/edit": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "角色编辑",
+                "parameters": [
+                    {
+                        "description": "角色信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SysRolesChangeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/role/info/:id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取角色详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.InfoResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "info": {
+                                                            "$ref": "#/definitions/po.SysRoles"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/rolemenu/:role_id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取角色菜单列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.SysRoleMenu"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/rolepermission/:role_id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取角色权限列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.SysRolePermissions"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/roleusers/:role_id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取角色用户列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.SysRoleUsers"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/channel": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "渠道分析",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "新增注册人数",
+                        "name": "new_reg",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "累计充值",
+                        "name": "recharge",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.StatisticalDailyResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/channelinfo": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "综合简报",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.StatisticalChannelInfo"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/lvt": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "盈亏LTV",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.StatisticalPlayerLtvResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/manufacturers": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "厂商统计",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.ManufacturersResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/retain": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "留存",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类型: 1登录,2注册,3充值,4提现",
+                        "name": "r_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.Retain"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/statistics/topic": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "主题统计",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "开始时间（时间戳）",
+                        "name": "start_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "结束时间（时间戳）",
+                        "name": "end_time",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page_index",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/dto.TopicResp"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取分页账号列表",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.ListResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/po.User"
+                                                            }
+                                                        },
+                                                        "page": {
+                                                            "$ref": "#/definitions/dto.Pagination"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/add": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "账号新增",
+                "parameters": [
+                    {
+                        "description": "账号信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserChangeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/edit": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "账号编辑",
+                "parameters": [
+                    {
+                        "description": "账号信息",
+                        "name": "info",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserChangeReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/ginx.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/info/:id": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "获取账号详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "账号id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/ginx.Result"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/ginx.InfoResponses"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "info": {
+                                                            "$ref": "#/definitions/dto.User"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -248,6 +2637,359 @@
         }
     },
     "definitions": {
+        "bootstrap.PermissionConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ContentInfoFloat64": {
+            "type": "object",
+            "properties": {
+                "day_1": {
+                    "type": "number"
+                },
+                "day_10": {
+                    "type": "number"
+                },
+                "day_11": {
+                    "type": "number"
+                },
+                "day_12": {
+                    "type": "number"
+                },
+                "day_13": {
+                    "type": "number"
+                },
+                "day_14": {
+                    "type": "number"
+                },
+                "day_15": {
+                    "type": "number"
+                },
+                "day_16": {
+                    "type": "number"
+                },
+                "day_17": {
+                    "type": "number"
+                },
+                "day_18": {
+                    "type": "number"
+                },
+                "day_19": {
+                    "type": "number"
+                },
+                "day_2": {
+                    "type": "number"
+                },
+                "day_20": {
+                    "type": "number"
+                },
+                "day_21": {
+                    "type": "number"
+                },
+                "day_22": {
+                    "type": "number"
+                },
+                "day_23": {
+                    "type": "number"
+                },
+                "day_24": {
+                    "type": "number"
+                },
+                "day_25": {
+                    "type": "number"
+                },
+                "day_26": {
+                    "type": "number"
+                },
+                "day_27": {
+                    "type": "number"
+                },
+                "day_28": {
+                    "type": "number"
+                },
+                "day_29": {
+                    "type": "number"
+                },
+                "day_3": {
+                    "type": "number"
+                },
+                "day_30": {
+                    "type": "number"
+                },
+                "day_31": {
+                    "type": "number"
+                },
+                "day_32": {
+                    "type": "number"
+                },
+                "day_33": {
+                    "type": "number"
+                },
+                "day_34": {
+                    "type": "number"
+                },
+                "day_35": {
+                    "type": "number"
+                },
+                "day_36": {
+                    "type": "number"
+                },
+                "day_37": {
+                    "type": "number"
+                },
+                "day_38": {
+                    "type": "number"
+                },
+                "day_39": {
+                    "type": "number"
+                },
+                "day_4": {
+                    "type": "number"
+                },
+                "day_40": {
+                    "type": "number"
+                },
+                "day_41": {
+                    "type": "number"
+                },
+                "day_42": {
+                    "type": "number"
+                },
+                "day_43": {
+                    "type": "number"
+                },
+                "day_44": {
+                    "type": "number"
+                },
+                "day_45": {
+                    "type": "number"
+                },
+                "day_46": {
+                    "type": "number"
+                },
+                "day_47": {
+                    "type": "number"
+                },
+                "day_48": {
+                    "type": "number"
+                },
+                "day_49": {
+                    "type": "number"
+                },
+                "day_5": {
+                    "type": "number"
+                },
+                "day_50": {
+                    "type": "number"
+                },
+                "day_51": {
+                    "type": "number"
+                },
+                "day_52": {
+                    "type": "number"
+                },
+                "day_53": {
+                    "type": "number"
+                },
+                "day_54": {
+                    "type": "number"
+                },
+                "day_55": {
+                    "type": "number"
+                },
+                "day_56": {
+                    "type": "number"
+                },
+                "day_57": {
+                    "type": "number"
+                },
+                "day_58": {
+                    "type": "number"
+                },
+                "day_59": {
+                    "type": "number"
+                },
+                "day_6": {
+                    "type": "number"
+                },
+                "day_60": {
+                    "type": "number"
+                },
+                "day_7": {
+                    "type": "number"
+                },
+                "day_8": {
+                    "type": "number"
+                },
+                "day_9": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.LoginLogResp": {
+            "type": "object",
+            "properties": {
+                "appid": {
+                    "description": "产品id",
+                    "type": "integer"
+                },
+                "begin_time": {
+                    "description": "登录时间",
+                    "type": "string"
+                },
+                "channel_id": {
+                    "description": "渠道id",
+                    "type": "integer"
+                },
+                "client_version": {
+                    "description": "客户端版本号",
+                    "type": "string"
+                },
+                "device_code": {
+                    "description": "设备imei(唯一识别码)",
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "在线时间:秒",
+                    "type": "integer"
+                },
+                "end_time": {
+                    "description": "离线时间",
+                    "type": "string"
+                },
+                "first_pay_num": {
+                    "description": "首充金额",
+                    "type": "string"
+                },
+                "first_pay_time": {
+                    "description": "首充时间",
+                    "type": "integer"
+                },
+                "first_payouts_num": {
+                    "description": "首提金额",
+                    "type": "string"
+                },
+                "first_payouts_time": {
+                    "description": "首提时间",
+                    "type": "integer"
+                },
+                "ip": {
+                    "description": "登录ip",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "地区",
+                    "type": "string"
+                },
+                "login_device": {
+                    "description": "登陆设备",
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string"
+                },
+                "os_infomation": {
+                    "description": "客户端系统信息",
+                    "type": "string"
+                },
+                "player_id": {
+                    "description": "玩家id",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "类型:0上线,1下线",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ManufacturersResp": {
+            "type": "object",
+            "properties": {
+                "bet": {
+                    "description": "下注",
+                    "type": "integer"
+                },
+                "channel_id": {
+                    "description": "渠道",
+                    "type": "integer"
+                },
+                "chip": {
+                    "description": "打码量",
+                    "type": "integer"
+                },
+                "date": {
+                    "description": "日期",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "join_num": {
+                    "description": "参与人数",
+                    "type": "integer"
+                },
+                "platform": {
+                    "description": "平台",
+                    "type": "string"
+                },
+                "reward": {
+                    "description": "返奖",
+                    "type": "integer"
+                },
+                "rtp": {
+                    "type": "number"
+                },
+                "win": {
+                    "description": "输赢",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.MerchantListReq": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "host": {
+                    "description": "站点域名",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "manage_host": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "商户名称",
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.Pagination": {
             "type": "object",
             "properties": {
@@ -262,41 +3004,838 @@
                 }
             }
         },
-        "dto.PayoutsReq": {
+        "dto.PayoutsAuditResp": {
             "type": "object",
             "properties": {
-                "loan_end_time": {
+                "after": {
+                    "description": "提现之后的金额",
                     "type": "integer"
                 },
-                "loan_start_time": {
-                    "type": "integer"
-                },
-                "order_end_time": {
-                    "type": "integer"
-                },
-                "order_id": {
+                "amount": {
+                    "description": "提现金额，小数点2位",
                     "type": "string"
                 },
-                "order_start_time": {
+                "back_coin": {
+                    "description": "提现失败，返回金币是否成功: 1=成功, -1=失败,0=未返回。",
                     "type": "integer"
                 },
-                "page_index": {
+                "bank_info": {
+                    "description": "银行卡信息: 姓名和卡号, json",
+                    "type": "string"
+                },
+                "card_id": {
+                    "description": "银行卡信息",
+                    "type": "string"
+                },
+                "channel": {
+                    "description": "用户渠道号",
                     "type": "integer"
                 },
-                "page_size": {
+                "check_time": {
+                    "description": "订单审核时间",
+                    "type": "string"
+                },
+                "coin": {
+                    "description": "扣除金币数",
                     "type": "integer"
+                },
+                "create_time": {
+                    "description": "订单创建时间",
+                    "type": "string"
+                },
+                "des": {
+                    "description": "订单失败描述",
+                    "type": "string"
+                },
+                "ex_order_id": {
+                    "description": "外部订单号",
+                    "type": "string"
+                },
+                "ex_resp": {
+                    "description": "外部支付平台回复内容",
+                    "type": "string"
+                },
+                "fee": {
+                    "description": "提现费用",
+                    "type": "string"
+                },
+                "from": {
+                    "description": "来源",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "description": "提现银行卡类型: upi, mps",
+                    "type": "integer"
+                },
+                "last_order_id": {
+                    "description": "最后的订单id",
+                    "type": "string"
+                },
+                "operator": {
+                    "description": "操作人",
+                    "type": "string"
+                },
+                "order_id": {
+                    "description": "订单id",
+                    "type": "string"
+                },
+                "partner_id": {
+                    "description": "商户id",
+                    "type": "string"
+                },
+                "pay_create_time": {
+                    "description": "回调createtime",
+                    "type": "string"
+                },
+                "pay_time": {
+                    "description": "订单放款时间",
+                    "type": "string"
+                },
+                "platform": {
+                    "description": "充值平台",
+                    "type": "string"
                 },
                 "player_id": {
                     "description": "玩家id",
                     "type": "integer"
                 },
+                "query_resp": {
+                    "description": "查询回复",
+                    "type": "string"
+                },
+                "query_state": {
+                    "description": "重试提交状态: 0=未检测, 1=自动提交,2=手动审核",
+                    "type": "integer"
+                },
+                "red": {
+                    "description": "红点状态",
+                    "type": "integer"
+                },
+                "retry": {
+                    "description": "重试次数",
+                    "type": "integer"
+                },
+                "retry_state": {
+                    "description": "重试提交状态: 0=未检测, 1=自动提交,2=手动审核",
+                    "type": "integer"
+                },
+                "show_err": {
+                    "description": "客户端显示错误",
+                    "type": "string"
+                },
                 "state": {
                     "description": "订单状态: 0=审核中, 1=审核成功,2=提现成功,-1=审核失败,-2=提现失败,-3=提现提交失败",
                     "type": "integer"
                 },
-                "total_num": {
+                "user_flag": {
+                    "description": "0普通 1优质",
+                    "type": "integer"
+                },
+                "user_kind": {
+                    "description": "用户风险种类: 0=a普通, 1=b可疑，2=c安全",
+                    "type": "integer"
+                },
+                "wd_flag": {
+                    "description": "提现标识 0普通 1代理",
                     "type": "integer"
                 }
+            }
+        },
+        "dto.RechargeLogResp": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "充值金额，小数点2位",
+                    "type": "string"
+                },
+                "bank_info": {
+                    "description": "银行卡信息: 姓名和卡号, json",
+                    "type": "string"
+                },
+                "before_coin": {
+                    "description": "充值前的金币数",
+                    "type": "integer"
+                },
+                "channel": {
+                    "description": "渠道号",
+                    "type": "integer"
+                },
+                "client_type": {
+                    "description": "客户端类型: 1=apk，2=html5",
+                    "type": "integer"
+                },
+                "client_ver": {
+                    "description": "客户端版本号",
+                    "type": "string"
+                },
+                "coin": {
+                    "description": "得到金币数",
+                    "type": "integer"
+                },
+                "create_time": {
+                    "description": "订单创建时间",
+                    "type": "string"
+                },
+                "des": {
+                    "description": "订单失败描述",
+                    "type": "string"
+                },
+                "enter_time": {
+                    "description": "进入商城页面时间",
+                    "type": "string"
+                },
+                "ex_order_id": {
+                    "description": "外部订单号",
+                    "type": "string"
+                },
+                "ex_resp": {
+                    "description": "外部支付平台回复内容",
+                    "type": "string"
+                },
+                "finish_time": {
+                    "description": "订单完成时间（发货成功或失败）",
+                    "type": "string"
+                },
+                "from": {
+                    "description": "支付渠道",
+                    "type": "string"
+                },
+                "goods_id": {
+                    "description": "充值商品id",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "input_type": {
+                    "description": "1=选择，2=手动输入",
+                    "type": "integer"
+                },
+                "invite_id": {
+                    "description": "邀请人玩家playerid",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "姓名",
+                    "type": "string"
+                },
+                "open_src": {
+                    "description": "打开来源id",
+                    "type": "integer"
+                },
+                "order_id": {
+                    "description": "订单id",
+                    "type": "string"
+                },
+                "partner_id": {
+                    "description": "商户id",
+                    "type": "string"
+                },
+                "pay_create_time": {
+                    "description": "回调createtime",
+                    "type": "string"
+                },
+                "pay_time": {
+                    "description": "订单付款时间",
+                    "type": "string"
+                },
+                "phone": {
+                    "description": "手机号",
+                    "type": "string"
+                },
+                "pic": {
+                    "description": "转账截图列表(json格式)",
+                    "type": "string"
+                },
+                "platform": {
+                    "description": "充值平台",
+                    "type": "string"
+                },
+                "player_id": {
+                    "description": "玩家id",
+                    "type": "integer"
+                },
+                "red": {
+                    "description": "红点状态",
+                    "type": "integer"
+                },
+                "src": {
+                    "description": "来源id： 1=商城按钮， 2=+号，3=充值优惠按钮， 4=登陆奖励入口， 5=月卡vip， 6=匹配金币不足。",
+                    "type": "integer"
+                },
+                "state": {
+                    "description": "订单状态: 0=未付款, 1=已付款,2=已发货，3=补发成功， -1=充值失败，-2=发货失败",
+                    "type": "integer"
+                },
+                "top_invite": {
+                    "description": "最高上级玩家id",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.Role": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "角色标识",
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "integer"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "merchant_id": {
+                    "description": "商户id",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "角色名称",
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.RoleMenu": {
+            "type": "object",
+            "properties": {
+                "menu_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RolePermissions": {
+            "type": "object",
+            "properties": {
+                "permission_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.RoleUsers": {
+            "type": "object",
+            "properties": {
+                "role_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.StatisticalDailyResp": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "description": "日期区间内参与spin人数",
+                    "type": "integer"
+                },
+                "active_avg_bet": {
+                    "description": "新注册活跃平均下注",
+                    "type": "integer"
+                },
+                "active_avg_spin": {
+                    "description": "新注册活跃平均spin次数",
+                    "type": "integer"
+                },
+                "active_withdraw": {
+                    "description": "活跃提现",
+                    "type": "integer"
+                },
+                "arpu": {
+                    "description": "arpu活跃帐号的充值金额",
+                    "type": "integer"
+                },
+                "bankruptcy": {
+                    "description": "破产玩家数量",
+                    "type": "integer"
+                },
+                "bet": {
+                    "type": "integer"
+                },
+                "bet_real_time": {
+                    "description": "实时投注",
+                    "type": "integer"
+                },
+                "channel_id": {
+                    "description": "渠道id default(0)",
+                    "type": "integer"
+                },
+                "coins": {
+                    "description": "可提金币",
+                    "type": "integer"
+                },
+                "fb_installs": {
+                    "description": "facebook渠道安装量",
+                    "type": "integer"
+                },
+                "first_recharge": {
+                    "description": "当日首充人数",
+                    "type": "integer"
+                },
+                "first_recharge_content": {
+                    "description": "首充玩家id",
+                    "type": "string"
+                },
+                "first_recharge_total": {
+                    "description": "当日首充用户充值总额",
+                    "type": "integer"
+                },
+                "gold_content": {
+                    "description": "活跃玩家id",
+                    "type": "string"
+                },
+                "ingots": {
+                    "description": "绑定金币",
+                    "type": "integer"
+                },
+                "ingots_pay": {
+                    "description": "付费用户绑金",
+                    "type": "integer"
+                },
+                "install_src_content": {
+                    "description": "安装来源",
+                    "type": "string"
+                },
+                "installs": {
+                    "description": "总安装量",
+                    "type": "integer"
+                },
+                "installs_update_status": {
+                    "description": "查询adjust安装信息状态 -1失败 0未更新 1更新成功",
+                    "type": "integer"
+                },
+                "login": {
+                    "description": "日期区间内有过登录行为的账号数量",
+                    "type": "integer"
+                },
+                "login_content": {
+                    "description": "登录玩家id",
+                    "type": "string"
+                },
+                "n_bonus_sum": {
+                    "description": "奖金",
+                    "type": "integer"
+                },
+                "new_arpu": {
+                    "description": "新用户的当天充值金额",
+                    "type": "integer"
+                },
+                "new_device_login_num": {
+                    "description": "新增设备登录",
+                    "type": "integer"
+                },
+                "new_pay": {
+                    "description": "新增付费人数+1",
+                    "type": "integer"
+                },
+                "new_pay_content": {
+                    "description": "新注册付费玩家",
+                    "type": "string"
+                },
+                "new_pay_limit": {
+                    "description": "新增充值额度",
+                    "type": "integer"
+                },
+                "new_recharge_success_rate": {
+                    "description": "新用户增支付成功率",
+                    "type": "number"
+                },
+                "new_recharge_success_rate_curr": {
+                    "description": "新用户增支付成功率(新增用户支付成功订单/ 新增用户所有支付订单)",
+                    "type": "number"
+                },
+                "new_withdraw": {
+                    "description": "新用户提现",
+                    "type": "integer"
+                },
+                "no_bind_coins": {
+                    "description": "非绑定金币",
+                    "type": "integer"
+                },
+                "not_sdk_content": {
+                    "description": "非sdk真金模式用户",
+                    "type": "string"
+                },
+                "old_arpu": {
+                    "description": "老用户(非当天注册)当天充值金额",
+                    "type": "integer"
+                },
+                "old_arpu_recharge": {
+                    "description": "老用户(非当天首充)当天充值金额",
+                    "type": "integer"
+                },
+                "old_device_login_num": {
+                    "description": "老设备登录",
+                    "type": "integer"
+                },
+                "old_pay": {
+                    "description": "付费老用户",
+                    "type": "integer"
+                },
+                "old_recharge_success_rate": {
+                    "description": "老用户付费成功率",
+                    "type": "number"
+                },
+                "old_recharge_success_rate_curr": {
+                    "description": "老用户付费成功率(老用户支付成功订单/老用户所有支付订单)",
+                    "type": "number"
+                },
+                "old_withdraw": {
+                    "description": "老用户提现",
+                    "type": "integer"
+                },
+                "prepaid": {
+                    "description": "日期区间内充值总额",
+                    "type": "integer"
+                },
+                "prepaid_count": {
+                    "description": "充值笔数",
+                    "type": "integer"
+                },
+                "prepaid_number": {
+                    "description": "日期区间内充值人数",
+                    "type": "integer"
+                },
+                "pv": {
+                    "type": "integer"
+                },
+                "re_new_pay_content": {
+                    "description": "复购新注册付费玩家",
+                    "type": "string"
+                },
+                "re_old_pay": {
+                    "description": "老用户复购率",
+                    "type": "number"
+                },
+                "re_old_pay_content": {
+                    "description": "复购老用户",
+                    "type": "string"
+                },
+                "recharge_content": {
+                    "description": "付费充值的玩家id",
+                    "type": "string"
+                },
+                "recharge_success_rate": {
+                    "description": "支付成功率",
+                    "type": "number"
+                },
+                "reg_black_list": {
+                    "description": "当日注册关联黑名单数量",
+                    "type": "integer"
+                },
+                "register": {
+                    "description": "日期区间内注册的账号数量",
+                    "type": "integer"
+                },
+                "register_content": {
+                    "description": "注册玩家id",
+                    "type": "string"
+                },
+                "spin_active": {
+                    "description": "新增活跃",
+                    "type": "integer"
+                },
+                "time_int": {
+                    "description": "当天时间缀",
+                    "type": "integer"
+                },
+                "time_tag": {
+                    "description": "小时标识",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "models",
+                    "type": "integer"
+                },
+                "uv": {
+                    "type": "integer"
+                },
+                "win": {
+                    "type": "integer"
+                },
+                "win_real_time": {
+                    "description": "实时赢奖情况",
+                    "type": "integer"
+                },
+                "withdraw": {
+                    "description": "日期区间内已提现成功金额",
+                    "type": "integer"
+                },
+                "withdraw_content": {
+                    "description": "提现玩家id",
+                    "type": "string"
+                },
+                "withdraw_new": {
+                    "description": "当天首次提现的人数",
+                    "type": "integer"
+                },
+                "withdraw_number": {
+                    "description": "日期区间内已提现成功人数",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.StatisticalPlayerLtvResp": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "日期内容",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.ContentInfoFloat64"
+                        }
+                    ]
+                },
+                "date": {
+                    "description": "日期总额",
+                    "type": "integer"
+                },
+                "recharge": {
+                    "description": "累计充值",
+                    "type": "integer"
+                },
+                "register": {
+                    "description": "新增注册",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "枚举类型",
+                    "type": "integer"
+                },
+                "withdraw": {
+                    "description": "累计提现",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.SysMenuReq": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "description": "图标",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "parent_id": {
+                    "description": "上级菜单",
+                    "type": "integer"
+                },
+                "permissions_ids": {
+                    "description": "权限表对应的ids json数组",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "show": {
+                    "description": "是否展示:1是,0否",
+                    "type": "integer"
+                },
+                "sort": {
+                    "description": "排序",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "uri": {
+                    "description": "路径",
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SysRolesChangeReq": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "$ref": "#/definitions/dto.Role"
+                },
+                "role_menu": {
+                    "$ref": "#/definitions/dto.RoleMenu"
+                },
+                "role_permissions": {
+                    "description": "商户id",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.RolePermissions"
+                        }
+                    ]
+                }
+            }
+        },
+        "dto.SysRolesReq": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ToThirdOrderCheckResp": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "orderNo": {
+                    "description": "查询订单id",
+                    "type": "string"
+                },
+                "pay_id": {
+                    "description": "充值通道ID",
+                    "type": "string"
+                },
+                "pay_name": {
+                    "description": "充值通道名",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "订单状态: 0 待支付 1 已支付 3 支付失败 4 支付异常, -1 查询失败",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.TopicResp": {
+            "type": "object",
+            "properties": {
+                "bet": {
+                    "description": "下注",
+                    "type": "integer"
+                },
+                "channel_id": {
+                    "description": "渠道",
+                    "type": "integer"
+                },
+                "chip": {
+                    "description": "打码量",
+                    "type": "integer"
+                },
+                "date": {
+                    "description": "日期",
+                    "type": "integer"
+                },
+                "game_id": {
+                    "description": "游戏id",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "join_num": {
+                    "description": "参与人数",
+                    "type": "integer"
+                },
+                "platform": {
+                    "description": "平台",
+                    "type": "string"
+                },
+                "reward": {
+                    "description": "返奖",
+                    "type": "integer"
+                },
+                "rtp": {
+                    "type": "number"
+                },
+                "win": {
+                    "description": "输赢",
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.User": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "merchant_id": {
+                    "type": "integer"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserBaseResp": {
+            "type": "object",
+            "properties": {
+                "card": {
+                    "type": "string"
+                },
+                "card_name": {
+                    "type": "string"
+                },
+                "device_code": {
+                    "type": "string"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "player_id": {
+                    "description": "玩家id",
+                    "type": "integer"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "u_type": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UserChangeReq": {
+            "type": "object",
+            "properties": {
+                "role_user": {
+                    "$ref": "#/definitions/dto.RoleUsers"
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.User"
+                }
+            }
+        },
+        "ginx.InfoResponses": {
+            "type": "object",
+            "properties": {
+                "info": {}
             }
         },
         "ginx.ListResponses": {
@@ -363,6 +3902,455 @@
                 }
             }
         },
+        "po.CurrencyRecord": {
+            "type": "object",
+            "properties": {
+                "after_balance": {
+                    "description": "操作后金币值",
+                    "type": "integer"
+                },
+                "amount": {
+                    "description": "加减值",
+                    "type": "integer"
+                },
+                "before_balance": {
+                    "description": "操作前金币值",
+                    "type": "integer"
+                },
+                "channel": {
+                    "description": "渠道id",
+                    "type": "integer"
+                },
+                "currency_type": {
+                    "description": "货币类型: 1=金币, 2=元宝（钻石）， 3=房卡",
+                    "type": "integer"
+                },
+                "func_id": {
+                    "description": "行为id或功能id",
+                    "type": "integer"
+                },
+                "game_id": {
+                    "description": "游戏id",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "level": {
+                    "description": "场次id",
+                    "type": "integer"
+                },
+                "player_id": {
+                    "description": "玩家id",
+                    "type": "integer"
+                },
+                "product_id": {
+                    "description": "产品id。 红幺鸡=9999，小程序=10000",
+                    "type": "integer"
+                },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "操作结果： 1=成功，0=失败",
+                    "type": "integer"
+                },
+                "trade_id": {
+                    "description": "流水id",
+                    "type": "string"
+                },
+                "trade_time": {
+                    "description": "创建时间",
+                    "type": "string"
+                }
+            }
+        },
+        "po.GameLog": {
+            "type": "object",
+            "properties": {
+                "add_cash": {
+                    "description": "赢真金",
+                    "type": "integer"
+                },
+                "add_deposit": {
+                    "description": "赢绑金",
+                    "type": "integer"
+                },
+                "balance": {
+                    "description": "游戏后总余额",
+                    "type": "integer"
+                },
+                "before_balance": {
+                    "description": "游戏前总余额",
+                    "type": "integer"
+                },
+                "before_bonus": {
+                    "description": "游戏前bonus",
+                    "type": "integer"
+                },
+                "before_cash": {
+                    "description": "游戏前真金",
+                    "type": "integer"
+                },
+                "before_deposit": {
+                    "description": "游戏前绑金",
+                    "type": "integer"
+                },
+                "bet": {
+                    "description": "下注",
+                    "type": "integer"
+                },
+                "bonus": {
+                    "description": "游戏后bonus",
+                    "type": "integer"
+                },
+                "cash": {
+                    "description": "游戏后真金",
+                    "type": "integer"
+                },
+                "channel_id": {
+                    "description": "渠道id",
+                    "type": "integer"
+                },
+                "chip": {
+                    "description": "此局打码量",
+                    "type": "integer"
+                },
+                "chip_rule": {
+                    "description": "打码规则 0:不打码 1:slot 2:brc 3:crash 4:poker",
+                    "type": "integer"
+                },
+                "control_log": {
+                    "description": "游戏日志",
+                    "type": "string"
+                },
+                "deposit": {
+                    "description": "游戏后绑金",
+                    "type": "integer"
+                },
+                "desk_id": {
+                    "description": "桌子id",
+                    "type": "integer"
+                },
+                "desk_type": {
+                    "description": "桌子类型",
+                    "type": "integer"
+                },
+                "end_time": {
+                    "description": "游戏结束时间",
+                    "type": "integer"
+                },
+                "ext_log": {
+                    "description": "游戏结果额外记录",
+                    "type": "string"
+                },
+                "fee": {
+                    "description": "抽水",
+                    "type": "integer"
+                },
+                "game_id": {
+                    "description": "游戏id",
+                    "type": "integer"
+                },
+                "game_type": {
+                    "description": "游戏类型 0 slot 1 百人场 2 牌局 3 崩溃类",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "自增id",
+                    "type": "integer"
+                },
+                "is_free": {
+                    "description": "是否免费",
+                    "type": "integer"
+                },
+                "level_id": {
+                    "description": "场次id",
+                    "type": "integer"
+                },
+                "link_game_log": {
+                    "description": "游戏结果",
+                    "type": "string"
+                },
+                "log_type": {
+                    "description": "日志分类 0=下注返奖日志 1=下注日志 2=返奖日志",
+                    "type": "integer"
+                },
+                "plan_id": {
+                    "description": "计划id",
+                    "type": "integer"
+                },
+                "platform_id": {
+                    "description": "游戏平台id",
+                    "type": "integer"
+                },
+                "player_id": {
+                    "description": "玩家id",
+                    "type": "integer"
+                },
+                "recharge": {
+                    "description": "总充值",
+                    "type": "integer"
+                },
+                "record_id": {
+                    "description": "记录id",
+                    "type": "string"
+                },
+                "reg_time": {
+                    "description": "注册时间",
+                    "type": "integer"
+                },
+                "result_log": {
+                    "description": "游戏结果",
+                    "type": "string"
+                },
+                "reward": {
+                    "description": "返奖",
+                    "type": "integer"
+                },
+                "start_time": {
+                    "description": "游戏开始时间",
+                    "type": "integer"
+                },
+                "win": {
+                    "description": "输赢值=返奖-下注-抽水",
+                    "type": "integer"
+                },
+                "win_type": {
+                    "description": "赢奖类型 0=未赢，1=小赢，2=big win，3=mega win",
+                    "type": "integer"
+                },
+                "withdrawal": {
+                    "description": "总提现",
+                    "type": "integer"
+                }
+            }
+        },
+        "po.MerchantList": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "host": {
+                    "description": "站点域名",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "manage_host": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "商户名称",
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "po.Retain": {
+            "type": "object",
+            "properties": {
+                "channel_id": {
+                    "description": "日期",
+                    "type": "integer"
+                },
+                "created_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "日期",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "id",
+                    "type": "integer"
+                },
+                "num": {
+                    "description": "人数",
+                    "type": "integer"
+                },
+                "r_14": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_14_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_2": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_2_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_3": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_30": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_30_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_3_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_4": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_45": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_45_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_4_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_5": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_5_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_6": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_60": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_60_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_6_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "r_7": {
+                    "description": "留存",
+                    "type": "number"
+                },
+                "r_7_num": {
+                    "description": "留存数",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "类型: 1登录,2注册,3充值,4提现",
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "description": "更新时间",
+                    "type": "string"
+                }
+            }
+        },
+        "po.StatisticalChannelInfo": {
+            "type": "object",
+            "properties": {
+                "channel_id": {
+                    "description": "渠道",
+                    "type": "integer"
+                },
+                "created_at": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "日期",
+                    "type": "integer"
+                },
+                "first_recharge": {
+                    "description": "首充用户",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "new_dev": {
+                    "description": "新增设备",
+                    "type": "integer"
+                },
+                "reg": {
+                    "description": "新增注册",
+                    "type": "integer"
+                },
+                "reg_bind": {
+                    "description": "新增绑定",
+                    "type": "integer"
+                },
+                "reg_recharge": {
+                    "description": "新充用户",
+                    "type": "integer"
+                },
+                "reg_recharge_amount": {
+                    "description": "新充金额",
+                    "type": "integer"
+                },
+                "reg_recharge_bind": {
+                    "description": "新绑充用户",
+                    "type": "integer"
+                },
+                "reg_recharge_times": {
+                    "description": "新充次数",
+                    "type": "integer"
+                },
+                "reg_withdraw_amount": {
+                    "description": "新提金额",
+                    "type": "integer"
+                },
+                "total_bind": {
+                    "description": "总绑定",
+                    "type": "integer"
+                },
+                "total_recharge": {
+                    "description": "总充用户",
+                    "type": "integer"
+                },
+                "total_recharge_amount": {
+                    "description": "总充值金额",
+                    "type": "integer"
+                },
+                "total_recharge_times": {
+                    "description": "总充次数",
+                    "type": "integer"
+                },
+                "total_withdraw_amount": {
+                    "description": "总提现金额",
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "description": "更新时间",
+                    "type": "string"
+                }
+            }
+        },
         "po.StatisticalRankPay": {
             "type": "object",
             "properties": {
@@ -423,6 +4411,275 @@
                 },
                 "withdraw": {
                     "description": "当日累计提现",
+                    "type": "integer"
+                }
+            }
+        },
+        "po.SysRoleMenu": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "menu_id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "po.SysRolePermissions": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "permission_id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "po.SysRoleUsers": {
+            "type": "object",
+            "properties": {
+                "create_time": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "role_id": {
+                    "type": "integer"
+                },
+                "update_time": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "po.SysRoles": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "角色标识",
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "integer"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "merchant_id": {
+                    "description": "商户id",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "角色名称",
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "po.User": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "create_time": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "guid": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_login_out_time": {
+                    "type": "integer"
+                },
+                "last_login_time": {
+                    "type": "integer"
+                },
+                "merchant_id": {
+                    "type": "integer"
+                },
+                "nick_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "update_time": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "po.WithdrawRecord": {
+            "type": "object",
+            "properties": {
+                "after": {
+                    "description": "提现之后的金额",
+                    "type": "integer"
+                },
+                "amount": {
+                    "description": "提现金额，小数点2位",
+                    "type": "string"
+                },
+                "back_coin": {
+                    "description": "提现失败，返回金币是否成功: 1=成功, -1=失败,0=未返回。",
+                    "type": "integer"
+                },
+                "bank_info": {
+                    "description": "银行卡信息: 姓名和卡号, json",
+                    "type": "string"
+                },
+                "card_id": {
+                    "description": "银行卡信息",
+                    "type": "string"
+                },
+                "channel": {
+                    "description": "用户渠道号",
+                    "type": "integer"
+                },
+                "check_time": {
+                    "description": "订单审核时间",
+                    "type": "string"
+                },
+                "coin": {
+                    "description": "扣除金币数",
+                    "type": "integer"
+                },
+                "create_time": {
+                    "description": "订单创建时间",
+                    "type": "string"
+                },
+                "des": {
+                    "description": "订单失败描述",
+                    "type": "string"
+                },
+                "ex_order_id": {
+                    "description": "外部订单号",
+                    "type": "string"
+                },
+                "ex_resp": {
+                    "description": "外部支付平台回复内容",
+                    "type": "string"
+                },
+                "fee": {
+                    "description": "提现费用",
+                    "type": "string"
+                },
+                "from": {
+                    "description": "来源",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "description": "提现银行卡类型: upi, mps",
+                    "type": "integer"
+                },
+                "last_order_id": {
+                    "description": "最后的订单id",
+                    "type": "string"
+                },
+                "operator": {
+                    "description": "操作人",
+                    "type": "string"
+                },
+                "order_id": {
+                    "description": "订单id",
+                    "type": "string"
+                },
+                "partner_id": {
+                    "description": "商户id",
+                    "type": "string"
+                },
+                "pay_create_time": {
+                    "description": "回调createtime",
+                    "type": "string"
+                },
+                "pay_time": {
+                    "description": "订单放款时间",
+                    "type": "string"
+                },
+                "platform": {
+                    "description": "充值平台",
+                    "type": "string"
+                },
+                "player_id": {
+                    "description": "玩家id",
+                    "type": "integer"
+                },
+                "query_resp": {
+                    "description": "查询回复",
+                    "type": "string"
+                },
+                "query_state": {
+                    "description": "重试提交状态: 0=未检测, 1=自动提交,2=手动审核",
+                    "type": "integer"
+                },
+                "red": {
+                    "description": "红点状态",
+                    "type": "integer"
+                },
+                "retry": {
+                    "description": "重试次数",
+                    "type": "integer"
+                },
+                "retry_state": {
+                    "description": "重试提交状态: 0=未检测, 1=自动提交,2=手动审核",
+                    "type": "integer"
+                },
+                "show_err": {
+                    "description": "客户端显示错误",
+                    "type": "string"
+                },
+                "state": {
+                    "description": "订单状态: 0=审核中, 1=审核成功,2=提现成功,-1=审核失败,-2=提现失败,-3=提现提交失败",
+                    "type": "integer"
+                },
+                "user_flag": {
+                    "description": "0普通 1优质",
+                    "type": "integer"
+                },
+                "wd_flag": {
+                    "description": "提现标识 0普通 1代理",
                     "type": "integer"
                 }
             }

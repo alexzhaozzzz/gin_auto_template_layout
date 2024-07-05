@@ -18,6 +18,13 @@ func NewMenu() *Menu {
 type Menu struct {
 }
 
+// GetList ...
+// @Summary 获取菜单列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]dto.SysMenuReq,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu [get]
 func (s Menu) GetList(c *ginx.Context) {
 	d := system.NewMenuData()
 	list, err := d.List()
@@ -48,11 +55,21 @@ func (s Menu) GetList(c *ginx.Context) {
 		}
 	}
 
-	resp := map[string]interface{}{"list": reqList}
+	resp := ginx.ListResponses{
+		List: reqList,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetInfo ...
+// @Summary 获取菜单详情
+// @Tags System
+// @Produce  json
+// @Param id path int true "菜单id"
+// @Success 200 {object} ginx.Result{data=ginx.InfoResponses{info=dto.SysMenuReq}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu/info/:id [get]
 func (s Menu) GetInfo(c *ginx.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -89,11 +106,22 @@ func (s Menu) GetInfo(c *ginx.Context) {
 		PermissionsIds: pIds,
 	}
 
-	resp := map[string]interface{}{"info": reqInfo}
+	resp := ginx.InfoResponses{
+		Info: reqInfo,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// Add ...
+// @Summary 菜单新增
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.SysMenuReq true "菜单信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu/add [post]
 func (s Menu) Add(c *ginx.Context) {
 	req := &dto.SysMenuReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -131,6 +159,15 @@ func (s Menu) Add(c *ginx.Context) {
 	return
 }
 
+// Edit ...
+// @Summary 菜单编辑
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.SysMenuReq true "菜单信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu/edit [post]
 func (s Menu) Edit(c *ginx.Context) {
 	req := &dto.SysMenuReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -168,6 +205,15 @@ func (s Menu) Edit(c *ginx.Context) {
 	return
 }
 
+// Delete ...
+// @Summary 菜单删除
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.SysMenuReq true "菜单信息（只需要传ID值）"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu/delete [post]
 func (s Menu) Delete(c *ginx.Context) {
 	req := &dto.SysMenuReq{}
 	if err := c.ShouldBindJSON(req); err != nil {

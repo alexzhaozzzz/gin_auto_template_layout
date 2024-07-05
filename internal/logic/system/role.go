@@ -18,6 +18,13 @@ func NewRole() *Role {
 type Role struct {
 }
 
+// GetList ...
+// @Summary 获取全部角色列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.SysRoles}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /role/all [get]
 func (s Role) GetList(c *ginx.Context) {
 	d := system.NewRoleData()
 	list, err := d.List()
@@ -27,11 +34,20 @@ func (s Role) GetList(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"list": list}
+	resp := ginx.ListResponses{
+		List: list,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetListByPage ...
+// @Summary 获取分页角色列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.SysRoles},page=dto.Pagination} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /role [get]
 func (s Role) GetListByPage(c *ginx.Context) {
 	req := &dto.Pagination{}
 	if err := c.ShouldBindQuery(req); err != nil {
@@ -56,11 +72,22 @@ func (s Role) GetListByPage(c *ginx.Context) {
 	}
 	req.TotalNum = int(total)
 
-	resp := map[string]interface{}{"list": list, "page": req}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: req,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetInfo ...
+// @Summary 获取角色详情
+// @Tags System
+// @Produce  json
+// @Param id path int true "角色id"
+// @Success 200 {object} ginx.Result{data=ginx.InfoResponses{info=po.SysRoles}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /role/info/:id [get]
 func (s Role) GetInfo(c *ginx.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -82,11 +109,22 @@ func (s Role) GetInfo(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"info": info}
+	resp := ginx.InfoResponses{
+		Info: info,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// Add ...
+// @Summary 角色新增
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.SysRolesChangeReq true "角色信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /role/add [post]
 func (s Role) Add(c *ginx.Context) {
 	req := &dto.SysRolesChangeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -134,6 +172,15 @@ func (s Role) Add(c *ginx.Context) {
 	return
 }
 
+// Edit ...
+// @Summary 角色编辑
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.SysRolesChangeReq true "角色信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /role/edit [post]
 func (s Role) Edit(c *ginx.Context) {
 	req := &dto.SysRolesChangeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -175,6 +222,15 @@ func (s Role) Edit(c *ginx.Context) {
 	return
 }
 
+// Delete ...
+// @Summary 角色删除
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.SysRolesReq true "角色信息（只需要传ID值）"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /role/delete [post]
 func (s Role) Delete(c *ginx.Context) {
 	req := &dto.SysRolesReq{}
 	if err := c.ShouldBindJSON(req); err != nil {

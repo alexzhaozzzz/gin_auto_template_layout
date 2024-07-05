@@ -15,6 +15,13 @@ func NewRoleUsers() *RoleUsers {
 type RoleUsers struct {
 }
 
+// GetList ...
+// @Summary 获取角色用户列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.SysRoleUsers,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /roleusers/:role_id [get]
 func (s RoleUsers) GetList(c *ginx.Context) {
 	roleId := c.Param("role_id")
 	if roleId == "" {
@@ -36,7 +43,9 @@ func (s RoleUsers) GetList(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"list": list}
+	resp := ginx.ListResponses{
+		List: list,
+	}
 	c.RenderSuccess(resp)
 	return
 }

@@ -114,11 +114,12 @@ func (s PayoutsData) ListStateCount(cIds []int32, state int32, page *dto.Payouts
 	return num, nil
 }
 
-func (s PayoutsData) ListByPlayerPage(cIds []int32, playerId int64, page *dto.UserListReq) ([]*po.WithdrawRecord, error) {
+func (s PayoutsData) ListByPlayerPage(cIds []int32, playerId int64, page *dto.UserRechargeListReq) ([]*po.WithdrawRecord, error) {
 	list := make([]*po.WithdrawRecord, 0)
 	playerDb := conn.GetPlayerDB().Where("n_channel IN ? AND n_playerid = ? ", cIds, playerId)
-
-	//TODO:需要增加时间查询
+	if page.OrderStartTime > 0 && page.OrderEndTime > 0 {
+		playerDb = playerDb.Where("n_createtime BETWEEN ? AND ?", time.Unix(page.OrderStartTime, 0), time.Unix(page.OrderEndTime, 0))
+	}
 	err := playerDb.Offset(page.GetOffset()).Limit(page.GetPageSize()).Find(&list).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		logrus.Errorf("PayoutsData ListByPlayerPage Err: %s", err.Error())
@@ -127,10 +128,12 @@ func (s PayoutsData) ListByPlayerPage(cIds []int32, playerId int64, page *dto.Us
 	return list, nil
 }
 
-func (s PayoutsData) ListPlayerCount(cIds []int32, playerId int64) (int64, error) {
+func (s PayoutsData) ListPlayerCount(cIds []int32, playerId int64, page *dto.UserRechargeListReq) (int64, error) {
 	num := int64(0)
 	playerDb := conn.GetPlayerDB().Model(&po.WithdrawRecord{}).Where("n_channel IN ? AND n_playerid = ? ", cIds, playerId)
-
+	if page.OrderStartTime > 0 && page.OrderEndTime > 0 {
+		playerDb = playerDb.Where("n_createtime BETWEEN ? AND ?", time.Unix(page.OrderStartTime, 0), time.Unix(page.OrderEndTime, 0))
+	}
 	err := playerDb.Count(&num).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		logrus.Errorf("PayoutsData ListPlayerCount Err: %s", err.Error())

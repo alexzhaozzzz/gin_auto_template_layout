@@ -62,7 +62,10 @@ func (s User) Login(c *ginx.Context) {
 	}
 	token := auth.NewJwt(se, su, i, t, ext)
 
-	resp := map[string]interface{}{"user": info, "token": token}
+	resp := ginx.LoginResponses{
+		User:  info,
+		Token: token,
+	}
 	c.RenderSuccess(resp)
 	return
 }
@@ -76,11 +79,20 @@ func (s User) GetList(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"list": list}
+	resp := ginx.ListResponses{
+		List: list,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetListByPage ...
+// @Summary 获取分页账号列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.User,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /user [get]
 func (s User) GetListByPage(c *ginx.Context) {
 	req := &dto.Pagination{}
 	if err := c.ShouldBindQuery(req); err != nil {
@@ -105,11 +117,22 @@ func (s User) GetListByPage(c *ginx.Context) {
 	}
 	req.TotalNum = int(total)
 
-	resp := map[string]interface{}{"list": list, "page": req}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: req,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetInfo ...
+// @Summary 获取账号详情
+// @Tags System
+// @Produce  json
+// @Param id path int true "账号id"
+// @Success 200 {object} ginx.Result{data=ginx.InfoResponses{info=dto.User}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /user/info/:id [get]
 func (s User) GetInfo(c *ginx.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -139,11 +162,23 @@ func (s User) GetInfo(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"info": info, "role": roleInfo}
+	resp := ginx.RoleResponses{
+		Info: info,
+		Role: roleInfo,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// Add ...
+// @Summary 账号新增
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.UserChangeReq true "账号信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /user/add [post]
 func (s User) Add(c *ginx.Context) {
 	req := &dto.UserChangeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -191,6 +226,15 @@ func (s User) Add(c *ginx.Context) {
 	return
 }
 
+// Edit ...
+// @Summary 账号编辑
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.UserChangeReq true "账号信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /user/edit [post]
 func (s User) Edit(c *ginx.Context) {
 	req := &dto.UserChangeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -228,6 +272,15 @@ func (s User) Edit(c *ginx.Context) {
 	return
 }
 
+// Delete ...
+// @Summary 账号删除
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.User true "账号信息（只需要传ID值）"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu/delete [post]
 func (s User) Delete(c *ginx.Context) {
 	req := &dto.User{}
 	if err := c.ShouldBindJSON(req); err != nil {

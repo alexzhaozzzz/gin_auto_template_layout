@@ -9,6 +9,6 @@ type GameLogReq struct {
 	Bet      int64  `json:"bet" form:"bet"`             // 下注
 	Reward   int64  `json:"reward" form:"reward"`       // 返奖
 	Win      int64  `json:"win" form:"win"`
-	LogType  int32  `json:"log_type" json:"log_type"`
+	LogType  int32  `json:"log_type" form:"log_type"`
 	Pagination
 }

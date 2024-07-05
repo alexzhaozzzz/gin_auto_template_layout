@@ -8,6 +8,7 @@ import (
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/auth"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/ginx"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/statusx"
+	"time"
 )
 
 func NewPayouts() *Payouts {
@@ -18,16 +19,21 @@ type Payouts struct {
 }
 
 // GetListByPage ...
-// @Summary 获取多个标签
-// @Tags todos
-// @Accept json
+// @Summary 提现日志
+// @Tags Ability
 // @Produce  json
-// @Param name query string false "标签名称" maxlength(100)
-// @Param state query int false "状态" Enums(0, 1) default(1)
-// @Param page query int false "页码"
+// @Param player_id query int false "玩家id"
+// @Param order_id query string false "订单id"
+// @Param state query int false "订单状态: 0=审核中, 1=审核成功,2=提现成功,-1=审核失败,-2=提现失败,-3=提现提交失败"
+// @Param order_start_time query int false "订单开始时间（时间戳）"
+// @Param order_end_time query int false "订单结束时间（时间戳）"
+// @Param loan_start_time query int false "放款开始时间（时间戳）"
+// @Param loan_end_time query int false "放款结束时间（时间戳）"
+// @Param page_index query int false "页码"
 // @Param page_size query int false "每页数量"
-// @Success 200 {object} ginx.Result{data=dto.PayoutsReq} "成功"
-// @Router /api/v1/tags [get]
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.WithdrawRecord,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/payouts [get]
 func (s Payouts) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -70,11 +76,27 @@ func (s Payouts) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": list, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetAuditListByPage ...
+// @Summary 提现审核
+// @Tags Ability
+// @Produce  json
+// @Param player_id query int false "玩家id"
+// @Param order_id query string false "订单id"
+// @Param amount_start query int false "金额开始值"
+// @Param amount_end query int false "金额结束值"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]dto.PayoutsAuditResp,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/payoutsaudit [get]
 func (s Payouts) GetAuditListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -123,9 +145,9 @@ func (s Payouts) GetAuditListByPage(c *ginx.Context) {
 				Amount:        v.Amount,
 				State:         v.State,
 				Des:           v.Des,
-				Createtime:    v.Createtime,
-				Paytime:       v.Paytime,
-				Checktime:     v.Checktime,
+				Createtime:    v.Createtime.Format(time.DateTime),
+				Paytime:       v.Paytime.Format(time.DateTime),
+				Checktime:     v.Checktime.Format(time.DateTime),
 				Coin:          v.Coin,
 				Channel:       v.Channel,
 				ExOrderid:     v.ExOrderid,
@@ -167,11 +189,22 @@ func (s Payouts) GetAuditListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": respList, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: respList,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetUserBaseInfo ...
+// @Summary 用户基本信息
+// @Tags Ability
+// @Produce  json
+// @Param player_id query int false "玩家id"
+// @Success 200 {object} ginx.Result{data=ginx.InfoResponses{info=dto.UserBaseResp}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/userbaseinfo [get]
 func (s Payouts) GetUserBaseInfo(c *ginx.Context) {
 	req := &dto.UserBaseReq{}
 	if err := c.ShouldBindQuery(req); err != nil {
@@ -223,29 +256,43 @@ func (s Payouts) GetUserBaseInfo(c *ginx.Context) {
 		DeviceCode: dpdInfo.NDevCode,
 	}
 
-	resp := map[string]interface{}{"info": respInfo}
+	resp := ginx.InfoResponses{
+		Info: respInfo,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
-func (s Payouts) GetUserListByPage(c *ginx.Context) {
+// GetUserRechargeListByPage ...
+// @Summary 用户充值提现
+// @Tags Ability
+// @Produce  json
+// @Param player_id query int false "玩家id"
+// @Param order_start_time query int false "订单开始时间（时间戳）"
+// @Param order_end_time query int false "订单结束时间（时间戳）"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.WithdrawRecord,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/userrechargelog [get]
+func (s Payouts) GetUserRechargeListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
-		logrus.Errorf("PayoutsReq GetUserListByPage GetJwtExt Err")
+		logrus.Errorf("PayoutsReq GetUserRechargeListByPage GetJwtExt Err")
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
-	req := &dto.UserListReq{}
+	req := &dto.UserRechargeListReq{}
 	if err := c.ShouldBindQuery(req); err != nil {
-		logrus.Errorf("PayoutsReq GetUserListByPage ShouldBindQuery Err: %s", err.Error())
+		logrus.Errorf("PayoutsReq GetUserRechargeListByPage ShouldBindQuery Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
 
 	cIds, err := common.GetChannelIdsByMerchantId(jwtInfo.MerchantId)
 	if err != nil {
-		logrus.Errorf("PayoutsReq GetChannelIdsByMerchantId Err: %s", err.Error())
+		logrus.Errorf("PayoutsReq GetUserRechargeListByPage GetChannelIdsByMerchantId Err: %s", err.Error())
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
@@ -253,14 +300,14 @@ func (s Payouts) GetUserListByPage(c *ginx.Context) {
 	d := ability.NewPayoutsData()
 	list, err := d.ListByPlayerPage(cIds, req.PlayerId, req)
 	if err != nil {
-		logrus.Errorf("PayoutsReq GetUserListByPage Err: %s", err.Error())
+		logrus.Errorf("PayoutsReq GetUserRechargeListByPage Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
 
-	total, err := d.ListPlayerCount(cIds, req.PlayerId)
+	total, err := d.ListPlayerCount(cIds, req.PlayerId, req)
 	if err != nil {
-		logrus.Errorf("PayoutsReq GetUserListByPage ListCount Err: %s", err.Error())
+		logrus.Errorf("PayoutsReq GetUserRechargeListByPage ListCount Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)
 		return
 	}
@@ -270,7 +317,10 @@ func (s Payouts) GetUserListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": list, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

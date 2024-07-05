@@ -1,7 +1,7 @@
 package dto
 
 type ThirdOrderCheckReq struct {
-	OrderId string `json:"order_id"`
+	OrderId string `json:"order_id" form:"order_id"`
 }
 
 type ToThirdOrderCheckReq struct {

@@ -17,6 +17,16 @@ func NewLoginLog() *LoginLog {
 type LoginLog struct {
 }
 
+// GetListByPage ...
+// @Summary 用户登录日志
+// @Tags Ability
+// @Produce  json
+// @Param player_id query int false "玩家id"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]dto.LoginLogResp,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/loginlog [get]
 func (s LoginLog) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -38,11 +48,6 @@ func (s LoginLog) GetListByPage(c *ginx.Context) {
 		c.Render(statusx.StatusInvalidRequest, nil)
 		return
 	}
-
-	//if req.Day == "" {
-	//	now := time.Now()
-	//	req.Day = fmt.Sprintf("%d%d%d", now.YearDay(), now.Month(), now.Day())
-	//}
 
 	d := ability.NewLoginLogData()
 	list, err := d.ListByPage(cIds, req)
@@ -103,7 +108,10 @@ func (s LoginLog) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": respList, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: respList,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

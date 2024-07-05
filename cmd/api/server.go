@@ -51,9 +51,8 @@ func Run() {
 	go func() {
 		// 开始监听端口
 		if err = srv.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
-			panic(fmt.Sprintf("listen: %s\n", err))
+			panic(fmt.Sprintf("listen err: %s\n", err))
 		}
-
 	}()
 
 	local := util.GetLocalIP()

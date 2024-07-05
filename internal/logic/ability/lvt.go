@@ -28,6 +28,17 @@ func (s Lvt) compute(c, t int, r int32) float64 {
 	return resp
 }
 
+// GetListByPage ...
+// @Summary 盈亏LTV
+// @Tags Statistics
+// @Produce  json
+// @Param start_time query int false "开始时间（时间戳）"
+// @Param end_time query int false "结束时间（时间戳）"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]dto.StatisticalPlayerLtvResp,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /statistics/lvt [get]
 func (s Lvt) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -164,7 +175,10 @@ func (s Lvt) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": respList, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: respList,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

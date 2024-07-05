@@ -16,6 +16,15 @@ func NewCommon() *Common {
 type Common struct {
 }
 
+// Upload ...
+// @Summary 上传文件
+// @Tags System
+// @Accept multipart/form-data
+// @Produce  json
+// @Param file formData file true "file"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /menu/add [post]
 func (s Common) Upload(c *ginx.Context) {
 	maxFileSize := 10 << 20 // 限制文件大小为10MB
 	if err := c.Request.ParseMultipartForm(int64(maxFileSize)); err != nil {
@@ -49,7 +58,9 @@ func (s Common) Upload(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"path": randomFileName}
+	resp := ginx.InfoResponses{
+		Info: randomFileName,
+	}
 	c.RenderSuccess(resp)
 	return
 }

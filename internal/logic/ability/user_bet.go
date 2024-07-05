@@ -20,7 +20,7 @@ type UserBet struct {
 
 // GetListByPage ...
 // @Summary 获取用户每日充提差
-// @Tags todos
+// @Tags Ability
 // @Produce  json
 // @Param start_time query int false "开始时间（时间戳）"
 // @Param end_time query int false "结束时间（时间戳）"
@@ -60,7 +60,7 @@ func (s UserBet) GetListByPage(c *ginx.Context) {
 		return
 	}
 
-	total, err := d.ListCount(cIds)
+	total, err := d.ListCount(cIds, req)
 	if err != nil {
 		logrus.Errorf("UserBet GetListByPage ListCount Err: %s", err.Error())
 		c.Render(statusx.StatusInternalServerError, nil)

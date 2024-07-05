@@ -18,6 +18,13 @@ func NewMerchant() *Merchant {
 type Merchant struct {
 }
 
+// GetListByPage ...
+// @Summary 获取商户列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.MerchantList,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /merchant [get]
 func (s Merchant) GetListByPage(c *ginx.Context) {
 	req := &dto.Pagination{}
 	if err := c.ShouldBindQuery(req); err != nil {
@@ -42,11 +49,22 @@ func (s Merchant) GetListByPage(c *ginx.Context) {
 	}
 	req.TotalNum = int(total)
 
-	resp := map[string]interface{}{"list": list, "page": req}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: req,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// GetInfo ...
+// @Summary 获取商户详情
+// @Tags System
+// @Produce  json
+// @Param id path int true "商户id"
+// @Success 200 {object} ginx.Result{data=ginx.InfoResponses{info=po.MerchantList}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /merchant/info/:id [get]
 func (s Merchant) GetInfo(c *ginx.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -68,11 +86,22 @@ func (s Merchant) GetInfo(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"info": info}
+	resp := ginx.InfoResponses{
+		Info: info,
+	}
 	c.RenderSuccess(resp)
 	return
 }
 
+// Add ...
+// @Summary 商户新增
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.MerchantListReq true "商户信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /merchant/add [post]
 func (s Merchant) Add(c *ginx.Context) {
 	req := &dto.MerchantListReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -101,6 +130,15 @@ func (s Merchant) Add(c *ginx.Context) {
 	return
 }
 
+// Edit ...
+// @Summary 商户编辑
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.MerchantListReq true "商户信息"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /merchant/edit [post]
 func (s Merchant) Edit(c *ginx.Context) {
 	req := &dto.MerchantListReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
@@ -129,6 +167,15 @@ func (s Merchant) Edit(c *ginx.Context) {
 	return
 }
 
+// Delete ...
+// @Summary 商户删除
+// @Tags System
+// @Accept  json
+// @Produce  json
+// @Param info body dto.MerchantListReq true "商户信息（只需要传ID值）"
+// @Success 200 {object} ginx.Result "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /merchant/delete [post]
 func (s Merchant) Delete(c *ginx.Context) {
 	req := &dto.MerchantListReq{}
 	if err := c.ShouldBindJSON(req); err != nil {

@@ -3,13 +3,13 @@
 package dto
 
 type SysRolesReq struct {
-	Id int64 `json:"id"`
+	Id int64 `json:"id" form:"id"`
 }
 
 type SysRolesChangeReq struct {
-	Role            Role            `json:"role"`
-	RoleMenu        RoleMenu        `json:"role_menu"`
-	RolePermissions RolePermissions `json:"role_permissions"` // 商户id
+	Role            Role            `json:"role" form:"role"`
+	RoleMenu        RoleMenu        `json:"role_menu" form:"role_menu"`
+	RolePermissions RolePermissions `json:"role_permissions" form:"role_permissions"` // 商户id
 }
 
 type Role struct {

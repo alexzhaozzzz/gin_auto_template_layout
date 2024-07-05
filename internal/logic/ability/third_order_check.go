@@ -17,6 +17,14 @@ func NewThirdOrderCheck() *ThirdOrderCheck {
 
 type ThirdOrderCheck struct{}
 
+// CheckOrderStatus ...
+// @Summary 获取订单第三方状态
+// @Tags Ability
+// @Produce  json
+// @Param order_id query string false "订单id"
+// @Success 200 {object} ginx.Result{data=ginx.InfoResponses{info=dto.ToThirdOrderCheckResp}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/checkorderstatus [get]
 func (s ThirdOrderCheck) CheckOrderStatus(c *ginx.Context) {
 	req := &dto.ThirdOrderCheckReq{}
 	if err := c.ShouldBindQuery(req); err != nil {
@@ -78,7 +86,9 @@ func (s ThirdOrderCheck) CheckOrderStatus(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"info": cResp}
+	resp := ginx.InfoResponses{
+		Info: cResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

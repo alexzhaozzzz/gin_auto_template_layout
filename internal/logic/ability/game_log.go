@@ -20,6 +20,22 @@ func NewGameLog() *GameLog {
 type GameLog struct {
 }
 
+// GetListByPage ...
+// @Summary 用户游戏日志
+// @Tags Ability
+// @Produce  json
+// @Param day query string true "日期（例:20240501）"
+// @Param player_id query int false "玩家id"
+// @Param game_id query int false "游戏id"
+// @Param bet query int false "下注"
+// @Param reward query int false "返奖"
+// @Param win query int false "赢取"
+// @Param log_type query int false "日志分类 0=下注返奖日志 1=下注日志 2=返奖日志"
+// @Param page_index query int false "页码"
+// @Param page_size query int false "每页数量"
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.GameLog,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /ability/gamelog [get]
 func (s GameLog) GetListByPage(c *ginx.Context) {
 	jwtInfo, ok := auth.GetJwtExt(c)
 	if !ok {
@@ -67,7 +83,10 @@ func (s GameLog) GetListByPage(c *ginx.Context) {
 		TotalNum:  int(total),
 	}
 
-	resp := map[string]interface{}{"list": list, "page": pageResp}
+	resp := ginx.ListResponses{
+		List: list,
+		Page: pageResp,
+	}
 	c.RenderSuccess(resp)
 	return
 }

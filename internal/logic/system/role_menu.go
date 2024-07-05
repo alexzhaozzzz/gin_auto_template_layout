@@ -15,6 +15,13 @@ func NewRoleMenu() *RoleMenu {
 type RoleMenu struct {
 }
 
+// GetList ...
+// @Summary 获取角色菜单列表
+// @Tags System
+// @Produce  json
+// @Success 200 {object} ginx.Result{data=ginx.ListResponses{list=[]po.SysRoleMenu,page=dto.Pagination}} "成功"
+// @Failure 400 {string} string "bad request"
+// @Router /rolemenu/:role_id [get]
 func (s RoleMenu) GetList(c *ginx.Context) {
 	roleId := c.Param("role_id")
 	if roleId == "" {
@@ -36,7 +43,9 @@ func (s RoleMenu) GetList(c *ginx.Context) {
 		return
 	}
 
-	resp := map[string]interface{}{"list": list}
+	resp := ginx.ListResponses{
+		List: list,
+	}
 	c.RenderSuccess(resp)
 	return
 }
