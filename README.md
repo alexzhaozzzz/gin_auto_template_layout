@@ -69,23 +69,22 @@
 * ./configs/rbac_model.conf 存放Casbin校验规则
 * ./configs/perm_config.json 存放当前目录下所有用户组path及method列表
 
-
 ## 相关命令
-> 
+
 > 注 : make执行需要的执行程序详见scripts/exec目录
 
-* 通过传参导出.sql文件: `make sql2file DATABASE=log TABLES=user TABLES=sys_roles`     //TABLES需要传入数据库对应表明，数据库地址及密码在根目录makefile文件中修改 **WARNING : 重复生成会覆盖**
+* 通过传参导出.sql文件: `make sql2file DATABASE=log TABLES=user TABLES=sys_roles`
+   * **WARNING : 重复生成会覆盖**。TABLES需要传入数据库对应表名，数据库地址及密码在根目录makefile文件中修改
 * 生成po目录文件: `make sql2po TABLES=user TABLES=sys_roles`
+   * **WARNING : 重复生成会覆盖**
 * 生成dto目录文件: `make sql2dto TABLES=user TABLES=sys_roles`
+   * **WARNING : 重复生成会覆盖**
 * 生成增删改查文件: 具体查看logic/template逻辑,请求接口传入对应参数
-
-> 请求参数：`{
-   "fun_name": "RoleMenu",  //生成的函数名
-   "db_struct_name": "SysRoleMenu", //生成PO目录文件对应的函数名
-   "param_name": "rm",  //传参使用的参数名
-   "file_name": "role_menu"  //最终生成的文件名
-   }`
-
+   * 请求参数请查看 ./internal/logic/system/template.go
+   * 开发注意: 生成完增删改查文件后，需要手动修改po目录中struct统一命名
+   * 请求结构例: `type User struct {` -> `type UserReq struct {`
+   * 返回结构例: `type User struct {` -> `type UserResp struct {`
 * 编译文件: `make build`
 * 打包文件: `make package`
 * 启动服务: 拷贝bin目录至任何位置，或直接进入bin目录。测试环境执行 `./start.sh config.test.yml`
+* 停止服务: **线上环境** 请务使用 `./stop.sh` 关闭服务

@@ -59,10 +59,13 @@ func Run() {
 	fmt.Println(colorx.Green("\r\nServer run at:"))
 	fmt.Printf("-  Local:   %s://localhost:%d/ \r\n", "http", httpPort)
 	fmt.Printf("-  Network: %s://%s:%d/ \r\n", "http", local, httpPort)
-	fmt.Println(colorx.Green("Swagger run at:"))
-	fmt.Printf("-  Local:   http://localhost:%d/swagger/index.html \r\n", httpPort)
-	fmt.Printf("-  Network: %s://%s:%d/swagger/index.html \r\n", "http", local, httpPort)
-	fmt.Printf("\r\n %s Enter Control + C Shutdown Server \r\n", time.Now().Format(time.DateTime))
+
+	if bootstrap.IsDevelopment() {
+		fmt.Println(colorx.Green("Swagger run at:"))
+		fmt.Printf("-  Local:   http://localhost:%d/swagger/index.html \r\n", httpPort)
+		fmt.Printf("-  Network: %s://%s:%d/swagger/index.html \r\n", "http", local, httpPort)
+		fmt.Printf("\r\n %s Enter Control + C Shutdown Server \r\n", time.Now().Format(time.DateTime))
+	}
 
 	<-quit // 阻塞主goroutine，等待信号
 

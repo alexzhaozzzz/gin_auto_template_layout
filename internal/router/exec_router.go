@@ -6,6 +6,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/docs"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/bootstrap"
 )
 
 var (
@@ -14,10 +15,10 @@ var (
 )
 
 func ExecRouter(r *gin.Engine, gHanFun ...gin.HandlerFunc) *gin.Engine {
-
-	// TODO:增加环境判断
-	//先注册swagger组件
-	registerSwagger(r)
+	if bootstrap.IsDevelopment() {
+		//先注册swagger组件
+		registerSwagger(r)
+	}
 
 	// 无需认证的路由
 	noCheckRoleRouter(r)

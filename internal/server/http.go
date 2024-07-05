@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/router"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/router/middleware"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/bootstrap"
 )
 
 func InitServer() *gin.Engine {
@@ -12,8 +13,11 @@ func InitServer() *gin.Engine {
 		panic("load gin error")
 	}
 
-	//TODO:增加环境判断
-	gin.SetMode(gin.DebugMode)
+	if bootstrap.IsDevelopment() {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	// 自定义错误处理
 	//r.Use(middleware.CustomError)
