@@ -1,60 +1,32 @@
 package middleware
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/ginx"
+	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/statusx"
 	"net/http"
 	"runtime"
-	"strconv"
-	"strings"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 func CustomError(c *gin.Context) {
 	defer func() {
-		if err := recover(); err != nil {
+		if _err := recover(); _err != nil {
+			buf := make([]byte, 64<<10)
+			n := runtime.Stack(buf, false)
+			errInfo := map[string]interface{}{
+				"error": fmt.Sprintf("%v", _err),
+				"req":   fmt.Sprintf("%+v", c.Request),
+				"stack": fmt.Sprintf("%s", buf[:n]),
+			}
 
-			if c.IsAborted() {
-				c.Status(200)
-			}
-			switch errStr := err.(type) {
-			case string:
-				p := strings.Split(errStr, "#")
-				if len(p) == 3 && p[0] == "CustomError" {
-					statusCode, e := strconv.Atoi(p[1])
-					if e != nil {
-						break
-					}
-					c.Status(statusCode)
-					fmt.Println(
-						time.Now().Format("2006-01-02 15:04:05"),
-						"[ERROR]",
-						c.Request.Method,
-						c.Request.URL,
-						statusCode,
-						c.Request.RequestURI,
-						c.ClientIP(),
-						p[2],
-					)
-					c.JSON(http.StatusOK, gin.H{
-						"code": statusCode,
-						"msg":  p[2],
-					})
-				} else {
-					c.JSON(http.StatusOK, gin.H{
-						"code": 500,
-						"msg":  errStr,
-					})
-				}
-			case runtime.Error:
-				c.JSON(http.StatusOK, gin.H{
-					"code": 500,
-					"msg":  errStr.Error(),
-				})
-			default:
-				panic(err)
-			}
+			errStr, _ := json.Marshal(errInfo)
+			logrus.Errorf(string(errStr))
+			ginx.NewContext(c).Render(statusx.StatusUnknownError, "nil", http.StatusUnauthorized)
+			c.Abort()
+			return
 		}
 	}()
 	c.Next()

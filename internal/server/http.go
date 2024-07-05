@@ -20,17 +20,18 @@ func InitServer() *gin.Engine {
 	}
 
 	// 自定义错误处理
-	//r.Use(middleware.CustomError)
+	r.Use(middleware.CustomError)
 	// NoCache is a middleware function that appends headers
-	r.Use(middleware.NoCache)
+	//r.Use(middleware.NoCache)
 	// 跨域处理
 	r.Use(middleware.Options)
 
 	// the jwt middleware
 	authMid := middleware.JWTAuth()
+	startAt := middleware.StartAt()
 
 	// 注册业务路由
-	router.ExecRouter(r, authMid)
+	router.ExecRouter(r, startAt, authMid)
 
 	return r
 }

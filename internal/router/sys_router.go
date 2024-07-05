@@ -23,7 +23,7 @@ func checkProRouter(r *gin.RouterGroup, gHanFun ...gin.HandlerFunc) {
 		rolepermission := system.NewRolePermissions()
 		c := system.NewCommon()
 
-		v1.GET("/upload", ginx.Handle(c.Upload))
+		v1.POST("/upload", ginx.Handle(c.Upload))
 
 		v1.GET("/user", ginx.Handle(user.GetListByPage))
 		v1.GET("/user/info/:id", ginx.Handle(user.GetInfo))

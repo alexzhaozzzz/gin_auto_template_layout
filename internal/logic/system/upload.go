@@ -24,7 +24,7 @@ type Common struct {
 // @Param file formData file true "file"
 // @Success 200 {object} ginx.Result "成功"
 // @Failure 400 {string} string "bad request"
-// @Router /menu/add [post]
+// @Router /upload [post]
 func (s Common) Upload(c *ginx.Context) {
 	maxFileSize := 10 << 20 // 限制文件大小为10MB
 	if err := c.Request.ParseMultipartForm(int64(maxFileSize)); err != nil {
@@ -59,7 +59,7 @@ func (s Common) Upload(c *ginx.Context) {
 	}
 
 	resp := ginx.InfoResponses{
-		Info: randomFileName,
+		Info: savePath,
 	}
 	c.RenderSuccess(resp)
 	return

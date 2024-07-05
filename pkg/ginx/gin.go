@@ -3,6 +3,7 @@ package ginx
 import (
 	"bytes"
 	"context"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,8 +27,8 @@ type Context struct {
 	*gin.Context
 }
 
-// paramsString ...
-func (c *Context) paramsString() string {
+// ParamsString ...
+func (c *Context) ParamsString() string {
 	var paramsBuff bytes.Buffer
 	for _, param := range c.Params {
 		paramsBuff.WriteString(param.Key)
@@ -35,17 +36,32 @@ func (c *Context) paramsString() string {
 		paramsBuff.WriteString(param.Value)
 		paramsBuff.WriteString(",")
 	}
+	paramsBuff.WriteString("consumes_time")
+	paramsBuff.WriteString("=")
+	paramsBuff.WriteString(strconv.FormatInt(c.processTime(), 10))
+	paramsBuff.WriteString(",")
+
 	if paramsBuff.String() != "" {
 		return strings.TrimSuffix(paramsBuff.String(), ",")
 	}
 	return paramsBuff.String()
 }
 
+// ParamsMap ...
+func (c *Context) ParamsMap() map[string]interface{} {
+	resp := make(map[string]interface{})
+	resp["path"] = c.Request.URL
+	resp["params"] = c.Params
+	resp["consumes_time"] = c.processTime()
+	return resp
+}
+
 // processTime ...
 func (c *Context) processTime() (processTime int64) {
-	startAt := c.GetInt64("startAt")
+	startAt := c.GetInt64("start_at")
+	now := time.Now().UnixMilli()
 	if startAt > 0 {
-		processTime = time.Now().UnixMilli() - startAt
+		processTime = now - startAt
 	}
 	return
 }

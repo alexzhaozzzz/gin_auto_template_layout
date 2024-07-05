@@ -3,7 +3,6 @@ package ability
 import (
 	"github.com/sirupsen/logrus"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/data/ability"
-
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/common"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/internal/logic/dto"
 	"gitlab.top.slotssprite.com/br_h5slots/server/merchant/pkg/auth"

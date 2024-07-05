@@ -37,6 +37,7 @@ bin/
 .idea/
 *.swp
 
-log
+log/
+uploads/
 __debug_bin*
 merchant.exe
